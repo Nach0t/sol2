@@ -2,6 +2,9 @@
 body {
   margin: 0;
   overflow: hidden;
+  background-color: #000;
+  font-family: 'Creepster', cursive;
+  color: #ff0000;
 }
 
 .menu {
@@ -10,27 +13,40 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #111;
-  color: white;
-  font-family: sans-serif;
+  background: url('/src/assets/zombie-menu.png') no-repeat center center/cover;
+  text-align: center;
 }
 
 .menu h1 {
-  font-size: 3em;
+  font-size: 4em;
   margin-bottom: 1em;
+  text-shadow: 3px 3px 10px black;
+  color: #f1c40f;
+  animation: pulse 2s infinite;
 }
 
 .menu button {
-  padding: 1em 2em;
-  font-size: 1.2em;
-  background: #00aa00;
-  color: white;
-  border: none;
-  border-radius: 10px;
+  padding: 1em 3em;
+  font-size: 1.8em;
+  background: rgba(0, 0, 0, 0.7);
+  color: #f00;
+  border: 3px solid #ff0000;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px red;
+  backdrop-filter: blur(3px);
 }
 
 .menu button:hover {
-  background: #007700;
+  background: rgba(255, 0, 0, 0.6);
+  color: white;
+  box-shadow: 0 0 25px #ff0000;
+  transform: scale(1.05);
+}
+
+@keyframes pulse {
+  0% { text-shadow: 0 0 10px red; }
+  50% { text-shadow: 0 0 25px red; }
+  100% { text-shadow: 0 0 10px red; }
 }
