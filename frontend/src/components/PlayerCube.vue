@@ -38,7 +38,7 @@ onMounted(() => {
     if (keys['d']) velocity.x += speed
 
     // Salto
-    if (keys['f'] && !isJumping) {
+    if (keys[' '] && !isJumping) {
       verticalSpeed = 0.14         // fuerza del salto
       isJumping = true
     }
