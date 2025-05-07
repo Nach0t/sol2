@@ -31,7 +31,16 @@ onMounted(() => {
 
   const loader = new GLTFLoader()
   loader.load('/models/MapaConCubo.glb', gltf => {
-    scene.add(gltf.scene)
+    const mapa = gltf.scene
+    scene.add(mapa)
+
+    const box = new THREE.Box3().setFromObject(mapa)
+    window.mapLimits = {
+      xMin: box.min.x,
+      xMax: box.max.x,
+      zMin: box.min.z,
+      zMax: box.max.z
+    }
   })
 
   function animate() {

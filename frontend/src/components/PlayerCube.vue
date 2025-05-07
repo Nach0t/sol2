@@ -1,54 +1,92 @@
-<template><div style="display: none;"></div></template>
+<template>
+  <div @click="enablePointerLock" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; cursor: crosshair;"></div>
+</template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import * as THREE from 'three'
 import { scene, camera, updateFunctions } from '@/sceneGlobals'
 
 let player
+const pitchObject = new THREE.Object3D() // vertical (mirada arriba/abajo)
+const yawObject = new THREE.Object3D()   // horizontal (mirada izquierda/derecha)
+
+yawObject.add(pitchObject)
+pitchObject.add(camera)
+
+const speed = 0.1
+const gravity = -0.01
+let isJumping = false
+let verticalSpeed = 0
+const groundY = 0.4
+
+const getSafeLimits = () => {
+  return window.mapLimits || {
+    xMin: -50,
+    xMax: 50,
+    zMin: -50,
+    zMax: 50
+  }
+}
+
+// Teclado
+const keys = {}
+window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true)
+window.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false)
+
+// Mouse — mirar con el puntero
+let isPointerLocked = false
+function enablePointerLock() {
+  const el = document.body
+  el.requestPointerLock?.()
+}
+
+document.addEventListener('pointerlockchange', () => {
+  isPointerLocked = document.pointerLockElement === document.body
+})
+
+document.addEventListener('mousemove', event => {
+  if (!isPointerLocked) return
+  const movementX = event.movementX || 0
+  const movementY = event.movementY || 0
+  yawObject.rotation.y -= movementX * 0.002
+  pitchObject.rotation.x -= movementY * 0.002
+  pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x))
+})
 
 onMounted(() => {
-  player = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 2, 1),
-    new THREE.MeshStandardMaterial({ color: 0x00ff00 })
-  )
-  player.position.set(10.25, 1, 0.5)
-  player.scale.set(0.5, 0.5, 0.5)
+  player = new THREE.Object3D()
+  player.position.set(10.25, groundY, 0.5)
   scene.add(player)
+  player.add(yawObject)
 
   const velocity = new THREE.Vector3()
-  const keys = {}
-  const speed = 0.05
-
-  let isJumping = false
-  let verticalSpeed = 0
-  const gravity = -0.01
-  const groundY = 0.5  // Altura del suelo
-
-  window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true)
-  window.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false)
+  const direction = new THREE.Vector3()
 
   const move = () => {
     velocity.set(0, 0, 0)
 
-    // Movimiento lateral
-    if (keys['w']) velocity.z -= speed
-    if (keys['s']) velocity.z += speed
-    if (keys['a']) velocity.x -= speed
-    if (keys['d']) velocity.x += speed
+    if (keys['w']) velocity.z -= 1
+    if (keys['s']) velocity.z += 1
+    if (keys['a']) velocity.x -= 1
+    if (keys['d']) velocity.x += 1
+
+    if (velocity.length() > 0) {
+      velocity.normalize().multiplyScalar(speed)
+      direction.copy(velocity).applyEuler(yawObject.rotation)
+      player.position.add(direction)
+    }
 
     // Salto
     if (keys[' '] && !isJumping) {
-      verticalSpeed = 0.14         // fuerza del salto
+      verticalSpeed = 0.10
       isJumping = true
     }
 
-    // Aplicar gravedad si está en el aire
+    // Gravedad
     if (isJumping) {
       verticalSpeed += gravity
       player.position.y += verticalSpeed
-
-      // Si llega al suelo, detener caída
       if (player.position.y <= groundY) {
         player.position.y = groundY
         verticalSpeed = 0
@@ -56,19 +94,18 @@ onMounted(() => {
       }
     }
 
-    // Aplicar movimiento
-    player.position.add(velocity)
+    // ✅ Aplicar límites — sin flotar en bordes
+    const limits = getSafeLimits()
+    player.position.x = Math.max(limits.xMin, Math.min(limits.xMax, player.position.x))
+    player.position.z = Math.max(limits.zMin, Math.min(limits.zMax, player.position.z))
+    player.position.y = Math.max(groundY, player.position.y) // evitar flotar
 
-    // Cámara sigue al jugador
-    const offset = new THREE.Vector3(0, 5, 10)
-    const target = player.position.clone().add(offset)
-    camera.position.lerp(target, 0.1)
-    camera.lookAt(player.position)
+    // Cámara queda fija en los "ojos"
+    const cameraOffset = new THREE.Vector3(0, 0, 0) // ya está montada sobre pitchObject
+    camera.position.copy(cameraOffset)
   }
 
   updateFunctions.push(move)
-
-  // Compartir el jugador globalmente
   window.player = player
 })
 </script>
