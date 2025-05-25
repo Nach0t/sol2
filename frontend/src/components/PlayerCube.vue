@@ -1,71 +1,194 @@
 <template>
-  <div @click="enablePointerLock" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; cursor: crosshair;"></div>
+  <div>
+    <div v-if="gotHit" class="hit-message">¡Te dañaron!</div>
+
+    <div v-if="health <= 0" class="death-screen">
+      <h1>💀 ¡Perdiste!</h1>
+      <h2>Que manco</h2>
+      <button @click="goToMenu">Volver al inicio</button>
+    </div>
+
+    <div class="health-bar-container">
+      <div class="health-bar" :style="{ width: health + '%', backgroundColor: healthColor }"></div>
+      <div class="health-text">{{ health }}</div>
+    </div>
+
+    <div @click="enablePointerLock" class="pointer-lock-area"></div>
+    <div class="crosshair">+</div>
+  </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch, computed } from 'vue'
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { scene, camera, updateFunctions } from '@/sceneGlobals'
 
+const props = defineProps({ paused: Boolean })
+const emit = defineEmits(['goToMenu']) // para emitir al componente padre
+
 let player
-const pitchObject = new THREE.Object3D() // vertical (mirada arriba/abajo)
-const yawObject = new THREE.Object3D()   // horizontal (mirada izquierda/derecha)
+const bullets = []
+const bulletSpeed = 10
+let bulletTemplate = null
+const shootSound = new Audio('/sounds/shoot.mp3')
 
-yawObject.add(pitchObject)
+const clock = new THREE.Clock()
+const pitchObject = new THREE.Object3D()
+const yawObject = new THREE.Object3D()
 pitchObject.add(camera)
+yawObject.add(pitchObject)
+scene.add(yawObject)
 
-const speed = 0.1
+let speed = 0.1
 const gravity = -0.01
 let isJumping = false
 let verticalSpeed = 0
 const groundY = 0.4
 
-const getSafeLimits = () => {
-  return window.mapLimits || {
-    xMin: -50,
-    xMax: 50,
-    zMin: -50,
-    zMax: 50
+const gotHit = ref(false)
+const health = ref(100)
+let canBeHit = true
+const immunityTime = 2000 // ✅ 2 segundos de inmunidad
+
+function goToMenu() {
+  emit('goToMenu')
+}
+
+const keys = {}
+function onKeyDown(e) { keys[e.key.toLowerCase()] = true }
+function onKeyUp(e) { keys[e.key.toLowerCase()] = false }
+
+let isPointerLocked = false
+function enablePointerLock() {
+  document.body.requestPointerLock?.()
+}
+function onPointerLockChange() {
+  isPointerLocked = document.pointerLockElement === document.body
+}
+function onMouseMove(e) {
+  if (!isPointerLocked || props.paused || health.value <= 0) return
+  const sensitivity = 0.002
+  yawObject.rotation.y -= e.movementX * sensitivity
+  pitchObject.rotation.x -= e.movementY * sensitivity
+  const limit = Math.PI / 2 - 0.01
+  pitchObject.rotation.x = Math.max(-limit, Math.min(limit, pitchObject.rotation.x))
+}
+
+window.setPlayerHit = () => {
+  if (!canBeHit || health.value <= 0) return
+  gotHit.value = true
+  health.value = Math.max(0, health.value - 5)
+  canBeHit = false
+  setTimeout(() => {
+    gotHit.value = false
+    canBeHit = true
+  }, immunityTime)
+}
+
+const healthColor = computed(() => {
+  if (health.value > 60) return '#2ecc71'
+  else if (health.value > 35) return '#f1c40f'
+  else return '#e74c3c'
+})
+
+watch(health, val => {
+  if (val <= 0) {
+    speed = 0
+    canBeHit = false
+    window.stopSpawning = true // ✅ detener generación de enemigos
+  }
+})
+
+function loadBulletModel(cb) {
+  const loader = new GLTFLoader()
+  loader.load('/models/bala_bullet.glb', gltf => {
+    bulletTemplate = gltf.scene
+    bulletTemplate.scale.set(0.05, 0.05, 0.05)
+    cb()
+  })
+}
+
+function shoot() {
+  if (!bulletTemplate || props.paused || health.value <= 0) return
+
+  const bullet = bulletTemplate.clone(true)
+  const offset = new THREE.Vector3(0, -0.05, -0.4)
+  const worldPos = offset.applyMatrix4(camera.matrixWorld)
+  bullet.position.copy(worldPos)
+
+  const direction = new THREE.Vector3()
+  camera.getWorldDirection(direction)
+  bullet.direction = direction.normalize()
+  bullet.speed = bulletSpeed
+  bullet.distanceTravelled = 0
+
+  bullet.box = new THREE.Box3().setFromCenterAndSize(bullet.position, new THREE.Vector3(0.8, 0.8, 0.8))
+  bullet.boxHelper = new THREE.BoxHelper(bullet, 0xff0000)
+  scene.add(bullet.boxHelper)
+
+  scene.add(bullet)
+  bullets.push(bullet)
+  window.bullets = bullets
+
+  shootSound.currentTime = 0
+  shootSound.play()
+
+  setTimeout(() => {
+    if (scene.children.includes(bullet)) scene.remove(bullet)
+    if (bullet.boxHelper) scene.remove(bullet.boxHelper)
+    const i = bullets.indexOf(bullet)
+    if (i !== -1) bullets.splice(i, 1)
+  }, 4000)
+}
+
+function updateBullets(delta) {
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    const bullet = bullets[i]
+    const moveDistance = bullet.speed * delta
+    bullet.position.addScaledVector(bullet.direction, moveDistance)
+    bullet.distanceTravelled += moveDistance
+
+    bullet.box.setFromCenterAndSize(bullet.position, new THREE.Vector3(0.8, 0.8, 0.8))
+    if (bullet.boxHelper) bullet.boxHelper.update()
+
+    if (bullet.distanceTravelled > 100) {
+      scene.remove(bullet)
+      if (bullet.boxHelper) scene.remove(bullet.boxHelper)
+      bullets.splice(i, 1)
+    }
   }
 }
 
-// Teclado
-const keys = {}
-window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true)
-window.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false)
-
-// Mouse — mirar con el puntero
-let isPointerLocked = false
-function enablePointerLock() {
-  const el = document.body
-  el.requestPointerLock?.()
-}
-
-document.addEventListener('pointerlockchange', () => {
-  isPointerLocked = document.pointerLockElement === document.body
-})
-
-document.addEventListener('mousemove', event => {
-  if (!isPointerLocked) return
-  const movementX = event.movementX || 0
-  const movementY = event.movementY || 0
-  yawObject.rotation.y -= movementX * 0.002
-  pitchObject.rotation.x -= movementY * 0.002
-  pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x))
-})
-
 onMounted(() => {
+  document.addEventListener('keydown', onKeyDown)
+  document.addEventListener('keyup', onKeyUp)
+  document.addEventListener('pointerlockchange', onPointerLockChange)
+  document.addEventListener('mousemove', onMouseMove)
+
+  window.addEventListener('mousedown', e => {
+    if (e.button === 0 && !props.paused && health.value > 0) shoot()
+  })
+
   player = new THREE.Object3D()
   player.position.set(10.25, groundY, 0.5)
   scene.add(player)
-  player.add(yawObject)
 
-  const velocity = new THREE.Vector3()
-  const direction = new THREE.Vector3()
+  player.box = new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
 
-  const move = () => {
+  yawObject.position.copy(player.position)
+  camera.position.set(0, -0.05, -0.25)
+
+  loadBulletModel(() => console.log('✔ Bala cargada'))
+
+  updateFunctions.push(() => {
+    if (props.paused || health.value <= 0) return
+
+    const delta = clock.getDelta()
+    updateBullets(delta)
+
+    const velocity = new THREE.Vector3()
     velocity.set(0, 0, 0)
-
     if (keys['w']) velocity.z -= 1
     if (keys['s']) velocity.z += 1
     if (keys['a']) velocity.x -= 1
@@ -73,39 +196,47 @@ onMounted(() => {
 
     if (velocity.length() > 0) {
       velocity.normalize().multiplyScalar(speed)
-      direction.copy(velocity).applyEuler(yawObject.rotation)
+      const direction = velocity.clone().applyEuler(yawObject.rotation)
       player.position.add(direction)
+      yawObject.position.copy(player.position)
     }
 
-    // Salto
     if (keys[' '] && !isJumping) {
       verticalSpeed = 0.10
       isJumping = true
     }
 
-    // Gravedad
     if (isJumping) {
       verticalSpeed += gravity
       player.position.y += verticalSpeed
+      yawObject.position.y = player.position.y
       if (player.position.y <= groundY) {
         player.position.y = groundY
+        yawObject.position.y = groundY
         verticalSpeed = 0
         isJumping = false
       }
     }
 
-    // ✅ Aplicar límites — sin flotar en bordes
-    const limits = getSafeLimits()
-    player.position.x = Math.max(limits.xMin, Math.min(limits.xMax, player.position.x))
-    player.position.z = Math.max(limits.zMin, Math.min(limits.zMax, player.position.z))
-    player.position.y = Math.max(groundY, player.position.y) // evitar flotar
+    player.position.x = Math.max(-50, Math.min(50, player.position.x))
+    player.position.z = Math.max(-50, Math.min(50, player.position.z))
+    player.position.y = Math.max(groundY, player.position.y)
+    yawObject.position.copy(player.position)
 
-    // Cámara queda fija en los "ojos"
-    const cameraOffset = new THREE.Vector3(0, 0, 0) // ya está montada sobre pitchObject
-    camera.position.copy(cameraOffset)
-  }
+    player.box.setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
+  })
 
-  updateFunctions.push(move)
   window.player = player
 })
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', onKeyDown)
+  document.removeEventListener('keyup', onKeyUp)
+  document.removeEventListener('pointerlockchange', onPointerLockChange)
+  document.removeEventListener('mousemove', onMouseMove)
+})
 </script>
+
+<style scoped>
+
+</style>

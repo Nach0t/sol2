@@ -3,13 +3,30 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onBeforeUnmount, ref } from 'vue'
 import { scene, camera, renderer, updateFunctions } from '@/sceneGlobals'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import * as THREE from 'three'
 
 const container = ref(null)
+
+let controls
+let mapa // para limpiar
+
+// Función resize para poder remover el event listener después
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+}
+
+function animate() {
+  requestAnimationFrame(animate)
+  updateFunctions.forEach(fn => fn())
+  if (controls) controls.update()
+  renderer.render(scene, camera)
+}
 
 onMounted(() => {
   scene.background = new THREE.Color(0x202020)
@@ -19,7 +36,7 @@ onMounted(() => {
   renderer.setSize(window.innerWidth, window.innerHeight)
   container.value.appendChild(renderer.domElement)
 
-  const controls = new OrbitControls(camera, renderer.domElement)
+  controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
   controls.enableRotate = false
   controls.enableZoom = false
@@ -31,7 +48,7 @@ onMounted(() => {
 
   const loader = new GLTFLoader()
   loader.load('/models/MapaConCubo.glb', gltf => {
-    const mapa = gltf.scene
+    mapa = gltf.scene
     scene.add(mapa)
 
     const box = new THREE.Box3().setFromObject(mapa)
@@ -43,18 +60,35 @@ onMounted(() => {
     }
   })
 
-  function animate() {
-    requestAnimationFrame(animate)
-    updateFunctions.forEach(fn => fn())
-    controls.update()
-    renderer.render(scene, camera)
-  }
   animate()
 
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
-  })
+  window.addEventListener('resize', onWindowResize)
+})
+
+onBeforeUnmount(() => {
+  // Quitar event listener de resize para evitar fugas
+  window.removeEventListener('resize', onWindowResize)
+
+  // Remover mapa y liberar memoria
+  if (mapa) {
+    scene.remove(mapa)
+    mapa.traverse(child => {
+      if (child.geometry) child.geometry.dispose()
+      if (child.material) {
+        if (Array.isArray(child.material)) {
+          child.material.forEach(mat => mat.dispose())
+        } else {
+          child.material.dispose()
+        }
+      }
+    })
+    mapa = null
+  }
+
+  // No hay que cancelar animate porque es ciclo continuo, pero si quieres, puedes controlar con flag
 })
 </script>
+
+<style scoped>
+
+</style>
