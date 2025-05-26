@@ -25,20 +25,3 @@ cd dead-rising/frontend
 npm install -g pnpm
 pnpm install
 pnpm run dev
-
----
-## Ejecución con Docker
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY ./frontend .
-
-RUN npm install -g pnpm && pnpm install
-RUN pnpm run build
-RUN npm install -g serve
-
-EXPOSE 3000
-
-CMD ["serve", "-s", "dist", "-l", "3000"]
-
