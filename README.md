@@ -20,7 +20,7 @@ Dead Rising es un juego web desarrollado utilizando **Vue.js**, **HTML**, **CSS*
 ##  Ejecución local
 
 ```bash
-git clone https://github.com/Nach0t/dead-rising.git
+git clone [https://github.com/Nach0t/dead-rising.git](https://github.com/Nach0t/Dead-Rising.git)
 cd dead-rising/frontend
 npm install -g pnpm
 pnpm install
