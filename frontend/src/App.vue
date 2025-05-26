@@ -10,7 +10,7 @@
       </div>
 
       <div v-if="showInstructions" class="instructions">
-        <p>🧟 Usa <b>WASD</b> para moverte, click izquierdo para disparar.</p>
+        <p>🧟 Usa <b>W, A, S, D</b> para moverte, click izquierdo para disparar.</p>
         <p>🎯 ¡Evita que los zombies te toquen o perderás vida!</p>
       </div>
     </div>
