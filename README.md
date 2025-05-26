@@ -1,27 +1,24 @@
+# Dead Rising - Juego Web
 
-#  Dead Rising - Juego Web
-
-Dead Rising es un juego web desarrollado utilizando **Vue.js**, **HTML**, **CSS** y **JavaScript**. Este proyecto fue construido con el objetivo de combinar desarrollo frontend moderno con herramientas profesionales como Docker, CI/CD y pruebas unitarias.
-
+**Dead Rising** es un juego web interactivo desarrollado con tecnologías modernas como Vue.js, Vite y Docker. Este proyecto combina un desarrollo frontend ágil con herramientas profesionales como integración continua (CI/CD) y pruebas unitarias.
 
 ---
-##  Tecnologías utilizadas
 
-- [Vue 3](https://vuejs.org/): como framework principal.
-- [Vite](https://vitejs.dev/): para empaquetado y desarrollo rápido.
-- [pnpm](https://pnpm.io/): como gestor de paquetes.
-- [Docker](https://www.docker.com/): para contenedores.
-- GitHub Actions para integración continua.
+##  Tecnologías Utilizadas
+
+- [Vue 3](https://vuejs.org/): Framework progresivo para la construcción de interfaces de usuario.
+- [Vite](https://vitejs.dev/): Herramienta de desarrollo y empaquetado rápido.
+- [pnpm](https://pnpm.io/): Gestor de paquetes eficiente y rápido.
+- [Docker](https://www.docker.com/): Contenedores para despliegue y desarrollo consistentes.
+- [GitHub Actions](https://github.com/features/actions): Automatización de flujos de trabajo de CI/CD.
 - HTML5, CSS3 y JavaScript.
 
-
 ---
 
-##  Ejecución local
+##  Instrucciones para Ejecutar la Aplicación Localmente
+
+1. **Clonar el repositorio:**
 
 ```bash
 git clone https://github.com/Nach0t/Dead-Rising.git
 cd Dead-Rising/frontend
-npm install -g pnpm
-pnpm install
-pnpm run dev
