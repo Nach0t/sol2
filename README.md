@@ -5,7 +5,7 @@ Dead Rising es un juego web desarrollado utilizando **Vue.js**, **HTML**, **CSS*
 
 
 ---
-## 🧩 Tecnologías utilizadas
+##  Tecnologías utilizadas
 
 - [Vue 3](https://vuejs.org/) como framework principal
 - [Vite](https://vitejs.dev/) para empaquetado y desarrollo rápido
