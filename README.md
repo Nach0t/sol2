@@ -22,3 +22,26 @@
 ```bash
 git clone https://github.com/Nach0t/Dead-Rising.git
 cd Dead-Rising/frontend
+```
+2. **Instala pnpm (si no lo tienes):**
+```bash
+npm install -g pnpm
+```
+3. **Instala las dependencias:**
+```bash
+pnpm install
+```
+4. **Ejecuta el servidor de desarrollo:**
+```bash
+pnpm dev
+```
+5. **Abre el navegador en:**
+ ```bash
+http://localhost:5173
+ ```
+
+
+
+
+
+
