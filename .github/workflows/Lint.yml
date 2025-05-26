@@ -1,0 +1,36 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Instalar dependencias
+        run: npm install
+        working-directory: frontend
+
+      - name: Lint JS y Vue
+        run: npx eslint . --ext .js,.vue
+        working-directory: frontend
+
+      - name: Lint CSS
+        run: npx stylelint "**/*.css"
+        working-directory: frontend
+
+      - name: Lint HTML
+        run: npx htmlhint "**/*.html"
+        working-directory: frontend

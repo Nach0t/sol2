@@ -2,8 +2,8 @@ body {
   margin: 0;
   overflow: hidden;
   background-color: #000;
-  font-family: 'Creepster', cursive;
-  color: #ff0000;
+  font-family: Creepster, cursive;
+  color: #f00;
 }
 
 .menu {
@@ -27,9 +27,9 @@ body {
 .menu button {
   padding: 0.5em 1.2em;
   font-size: 1.5em;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgb(0 0 0 / 70%);
   color: #f00;
-  border: 3px solid #ff0000;
+  border: 3px solid #f00;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -41,15 +41,15 @@ body {
 }
 
 .menu button:hover {
-  background: rgba(255, 0, 0, 0.6);
+  background: rgb(255 0 0 / 60%);
   color: white;
-  box-shadow: 0 0 20px #ff0000;
+  box-shadow: 0 0 20px #f00;
   transform: scale(1.05);
 }
 
 .menu button:focus {
   outline: none;
-  border-color: #ffcc00;
+  border-color: #fc0;
 }
 
 @keyframes pulse {
@@ -67,9 +67,9 @@ body {
 .confirmation-buttons button {
   font-size: 1em;
   padding: 0.5em 1em;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgb(0 0 0 / 80%);
   border-radius: 10px;
-  border: 3px solid #ff0000;
+  border: 3px solid #f00;
   color: white;
   box-shadow: 0 0 10px red;
   transition: all 0.3s ease;
@@ -79,31 +79,13 @@ body {
 }
 
 .confirmation-buttons button:hover {
-  background: rgba(255, 0, 0, 0.6);
-  box-shadow: 0 0 20px #ff0000;
+  background: rgb(255 0 0 / 60%);
+  box-shadow: 0 0 20px #f00;
 }
 
 .confirmation-buttons button:focus {
   outline: none;
-  border-color: #ffcc00;
-}
-
-.crosshair {
-  z-index: 1000;
-}
-
-/* ───────────────────────────────
-   Estilos importados desde PlayerCube.vue
-──────────────────────────────── */
-
-.pointer-lock-area {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  cursor: crosshair;
-  z-index: 1;
+  border-color: #fc0;
 }
 
 .crosshair {
@@ -116,6 +98,16 @@ body {
   color: red;
   user-select: none;
   pointer-events: none;
+}
+
+.pointer-lock-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+  z-index: 1;
 }
 
 .health-bar-container {
@@ -149,7 +141,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(255, 0, 0, 0.8);
+  background: rgb(255 0 0 / 80%);
   color: white;
   padding: 20px;
   font-size: 24px;
@@ -162,7 +154,7 @@ body {
   width: 250px;
   margin-bottom: 1rem;
   border-radius: 8px;
-  box-shadow: 0 0 20px #ff0000;
+  box-shadow: 0 0 20px #f00;
 }
 
 .menu-buttons {
@@ -174,7 +166,7 @@ body {
 
 .instructions {
   margin-top: 1.5em;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(0 0 0 / 70%);
   color: #fff;
   padding: 1em;
   border: 2px solid #f1c40f;
@@ -202,7 +194,7 @@ body {
   margin-bottom: 1em;
   text-shadow: 3px 3px 10px black;
   color: #f1c40f;
-  font-family: 'Creepster', cursive;
+  font-family: Creepster, cursive;
   animation: pulse 2s infinite;
 }
 
@@ -213,13 +205,12 @@ body {
   align-items: center;
 }
 
-/* Botones del menú de pausa reutilan los estilos existentes */
 .pause-menu button {
   padding: 0.5em 1.2em;
   font-size: 1.5em;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgb(0 0 0 / 70%);
   color: #f00;
-  border: 3px solid #ff0000;
+  border: 3px solid #f00;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -230,9 +221,9 @@ body {
 }
 
 .pause-menu button:hover {
-  background: rgba(255, 0, 0, 0.6);
+  background: rgb(255 0 0 / 60%);
   color: white;
-  box-shadow: 0 0 20px #ff0000;
+  box-shadow: 0 0 20px #f00;
   transform: scale(1.05);
 }
 
@@ -251,7 +242,7 @@ body {
 }
 
 .death-screen h1 {
-  font-family: 'Creepster', cursive;
+  font-family: Creepster, cursive;
   font-size: 3em;
   margin-bottom: 1em;
 }
@@ -271,24 +262,10 @@ body {
   background: darkred;
 }
 
-.pause-menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: url('/src/assets/zombie-menu.png') no-repeat center center/cover;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 .pause-title {
   font-size: 3em;
   color: #f1c40f;
-  font-family: 'Creepster', cursive;
+  font-family: Creepster, cursive;
   text-shadow: 3px 3px 10px black;
   margin-bottom: 1em;
 }
@@ -306,7 +283,7 @@ body {
   font-size: 1.2em;
   padding: 0.5em 1.5em;
   border: 3px solid red;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgb(0 0 0 / 80%);
   color: red;
   cursor: pointer;
   border-radius: 10px;
@@ -315,7 +292,7 @@ body {
 
 .menu-buttons button:hover,
 .confirmation-buttons button:hover {
-  background: rgba(255, 0, 0, 0.6);
+  background: rgb(255 0 0 / 60%);
   color: white;
   box-shadow: 0 0 10px red;
 }
