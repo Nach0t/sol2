@@ -39,6 +39,25 @@ pnpm dev
  ```bash
 http://localhost:5173
  ```
+## Cómo ejecutar con Docker:
+1. **Clonar el repositorio:**
+
+```bash
+git clone https://github.com/Nach0t/Dead-Rising.git
+cd Dead-Rising/frontend
+```
+2. **Construye la imagen:**
+```bash
+docker build -t dead-rising .
+```
+3. **Ejecuta el contenedor:**
+```bash
+docker run -p 5173:5173 dead-rising
+```
+4. **Abre el navegador en:**
+```bash
+http://localhost:5173
+```
 
 
 
