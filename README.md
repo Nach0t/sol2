@@ -25,12 +25,14 @@
 
 ## 🛠 Tecnologías Utilizadas
 
-- [Vue 3](https://vuejs.org/): Framework progresivo para la construcción de interfaces de usuario.
-- [Vite](https://vitejs.dev/): Herramienta de desarrollo y empaquetado rápido.
-- [pnpm](https://pnpm.io/): Gestor de paquetes eficiente y rápido.
-- [Docker](https://www.docker.com/): Contenedores para despliegue y desarrollo consistentes.
-- [GitHub Actions](https://github.com/features/actions): Automatización de flujos de trabajo de CI/CD.
-- HTML5, CSS3 y JavaScript.
+[![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)](https://vuejs.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
+[![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/features/actions)
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)]()
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)]()
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)]()
 
 ---
 
