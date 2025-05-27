@@ -1,3 +1,7 @@
+# Dead Rising (Español)
+
+🌐 Idiomas disponibles: [English](README.md) | [Español](README.es.md)
+
 
 ![CI/CD](https://github.com/Nach0t/Dead-Rising/actions/workflows/CI.yml/badge.svg)
 ![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/Lint.yml/badge.svg)
