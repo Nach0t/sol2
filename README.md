@@ -1,8 +1,5 @@
 # Dead Rising
 
-🌐 Available languages: [English](README.md) | [Español](README.es.md)
-
-
 ![CI/CD](https://github.com/Nach0t/Dead-Rising/actions/workflows/CI.yml/badge.svg)
 ![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/Lint.yml/badge.svg)
 
@@ -112,5 +109,3 @@ http://localhost:5173
 
 - Ejecuta verificación de estilo y formato con ESLint y Prettier
 - Garantiza calidad y consistencia del código
-
-README
