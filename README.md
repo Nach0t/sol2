@@ -59,6 +59,15 @@ docker run -p 5173:5173 dead-rising
 http://localhost:5173
 ```
 
+## CI/CD con Github Actions 
+Cada push a la rama main ejecuta automáticamente:
+
+-Instalación de Node.js y pnpm.
+-Instalación de dependencias.
+-Compilación del frontend con Vite.
+-Construcción de imagen Docker.
+-Login en Docker Hub.
+-Publicación automática como nach0t/dead-rising:latest.
 
 
 
