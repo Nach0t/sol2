@@ -33,43 +33,94 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)]()
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)]()
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)]()
+[![Three.js](https://img.shields.io/badge/Three.js-000?logo=threedotjs&logoColor=fff)](#)
+[![Blender](https://img.shields.io/badge/Blender-%23F5792A.svg?logo=blender&logoColor=white)](#)
 
 ---
 
 ## 🚀 Instrucciones para Ejecutar la Aplicación Localmente
 
+### Para Linux/macOS  
+[![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=F0F0F0)](#) [![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](#)
+
 # Instalar npm (si no lo tienes instalado) - para Debian/Ubuntu
- ```bash
- sudo apt update
- ```
- ```bash
- sudo apt install npm
+
+```bash
+sudo apt update
+```
+
+```bash
+sudo apt install npm
 ```
 
 # Clonar el repositorio
- ```bash
- git clone https://github.com/Nach0t/Dead-Rising.git
- ```
- ```bash
- cd Dead-Rising/frontend
+
+```bash
+git clone https://github.com/Nach0t/Dead-Rising.git
+```
+
+```bash
+cd Dead-Rising/frontend
 ```
 
 # Instalar dependencias
- ```bash
- npm install
+
+```bash
+npm install
 ```
 
 # Ejecutar el servidor de desarrollo
- ```bash
-npm run dev 
+
+```bash
+npm run dev
 ```
 
 # Luego abre en tu navegador:
- ```bash
- http://localhost:5173
+
+```bash
+http://localhost:5173
 ```
 
 ---
+
+### Para Windows  
+[![Windows](https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&logoColor=white)](#)
+
+# Instalar npm (si no lo tienes instalado)
+
+Puedes instalar Node.js y npm desde el instalador oficial:  
+https://nodejs.org/
+
+# Clonar el repositorio
+
+```powershell
+git clone https://github.com/Nach0t/Dead-Rising.git
+```
+
+```powershell
+cd Dead-Rising\frontend
+```
+
+# Instalar dependencias
+
+```powershell
+npm install
+```
+
+# Ejecutar el servidor de desarrollo
+
+```powershell
+npm run dev
+```
+
+# Luego abre en tu navegador:
+
+```powershell
+http://localhost:5173
+```
+
+---
+
 
 
 ## 🐳 Cómo Ejecutar con Docker
@@ -138,6 +189,7 @@ docker pull nach0t/dead-rising:latest
 - Ejecuta verificación de estilo y formato con ESLint y Prettier
 - Garantiza calidad y consistencia del código
 
+---
 
 ### Docker.yml
 
@@ -146,3 +198,7 @@ docker pull nach0t/dead-rising:latest
 - Construye y etiqueta la imagen Docker para producción
 - Realiza login automático en Docker Hub usando secretos
 - Publica la imagen en Docker Hub bajo `nach0t/dead-rising:latest`
+
+
+---
+
