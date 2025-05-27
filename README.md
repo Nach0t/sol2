@@ -8,7 +8,7 @@
 
 # Dead Rising - Juego Web
 
-**Dead Rising** es un juego web interactivo desarrollado con tecnologías modernas como Vue.js, Vite y Docker. Este proyecto combina un desarrollo frontend ágil con herramientas profesionales como integración continua (CI/CD), pruebas unitarias y análisis de código.
+**Dead Rising** es un juego web interactivo desarrollado con tecnologías modernas como Vue.js, Vite y Docker. Este proyecto combina un desarrollo frontend con herramientas profesionales como integración continua (CI/CD), pruebas unitarias y análisis de código.
 
 ---
 
