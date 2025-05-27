@@ -27,7 +27,7 @@
 
 [![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
-[![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![npm](https://img.shields.io/badge/npm-CB0000?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/features/actions)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)]()
@@ -39,21 +39,35 @@
 ## 🚀 Instrucciones para Ejecutar la Aplicación Localmente
 
 # Instalar npm (si no lo tienes instalado) - para Debian/Ubuntu
-sudo apt update
-sudo apt install npm
+ ```bash
+ sudo apt update
+ ```
+ ```bash
+ sudo apt install npm
+```
 
 # Clonar el repositorio
-git clone https://github.com/Nach0t/Dead-Rising.git
-cd Dead-Rising/frontend
+ ```bash
+ git clone https://github.com/Nach0t/Dead-Rising.git
+ ```
+ ```bash
+ cd Dead-Rising/frontend
+```
 
 # Instalar dependencias
-npm install
+ ```bash
+ npm install
+```
 
 # Ejecutar el servidor de desarrollo
-npm run dev
+ ```bash
+npm run dev 
+```
 
 # Luego abre en tu navegador:
-http://localhost:5173
+ ```bash
+ http://localhost:5173
+```
 
 ---
 
