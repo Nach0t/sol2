@@ -132,3 +132,12 @@ docker pull nach0t/dead-rising:latest
 
 - Ejecuta verificación de estilo y formato con ESLint y Prettier
 - Garantiza calidad y consistencia del código
+
+
+### Docker.yml
+
+![Docker Build](https://github.com/Nach0t/Dead-Rising/actions/workflows/docker.yml/badge.svg)
+
+- Construye y etiqueta la imagen Docker para producción
+- Realiza login automático en Docker Hub usando secretos
+- Publica la imagen en Docker Hub bajo `nach0t/dead-rising:latest`
