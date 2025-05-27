@@ -62,30 +62,49 @@ http://localhost:5173
 
 ---
 
+
 ## 🐳 Cómo Ejecutar con Docker
 
-1. **Clonar el repositorio:**
-```bash
-git clone https://github.com/Nach0t/Dead-Rising.git
-cd Dead-Rising/frontend
-```
+Este proyecto utiliza el workflow [`Docker Build and Push`](https://github.com/Nach0t/Dead-Rising/blob/main/.github/workflows/docker.yml) para construir y publicar automáticamente la imagen en Docker Hub.
 
-2. **Construir la imagen:**
-```bash
-docker build -t dead-rising .
-```
+1. Clona el repositorio (opcional si solo usas Docker Hub):
 
-3. **Ejecutar el contenedor:**
-```bash
-docker run -p 5173:5173 dead-rising
-```
+   ```bash
+   git clone https://github.com/Nach0t/Dead-Rising.git
+   cd Dead-Rising
+   ```
 
-4. **Abrir el navegador en:**
+2. Ejecuta el contenedor desde Docker Hub:
+
+   ```bash
+   docker pull nach0t/dead-rising:latest
+   docker run -p 5173:5173 nach0t/dead-rising:latest
+   ```
+
+3. Abre el navegador en:
+
+   ```bash
+   http://localhost:5173
+   ```
+
+---
+
+## 📦 Imagen en Docker Hub [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)](#)
+
+[![Docker Hub](https://img.shields.io/badge/Docker--Hub-nach0t%2Fdead--rising-blue?style=for-the-badge&logo=docker)](https://hub.docker.com/r/nach0t/dead-rising)
+[![Automated Build](https://img.shields.io/docker/automated/nach0t/dead-rising?style=for-the-badge)](https://hub.docker.com/r/nach0t/dead-rising)
+![Image Size](https://img.shields.io/docker/image-size/nach0t/dead-rising/latest?style=for-the-badge)
+
+Puedes usar la imagen directamente desde Docker Hub:
+
+🔗 [https://hub.docker.com/r/nach0t/dead-rising](https://hub.docker.com/r/nach0t/dead-rising)
+
 ```bash
-http://localhost:5173
+docker pull nach0t/dead-rising:latest
 ```
 
 ---
+
 
 ## 🔄 CI/CD con GitHub Actions
 
