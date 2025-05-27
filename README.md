@@ -140,14 +140,12 @@ Puedes ejecutar esta aplicación directamente usando Docker, sin necesidad de cl
    docker pull nach0t/dead-rising:latest
    ```
 
-2. Ejecuta el contenedor desde Docker Hub:
-
-   ```bash
+### 2. Ejecuta el contenedor desde Docker Hub:
+```bash
    docker run -p 5173:5173 nach0t/dead-rising:latest
    ```
 
-3. Abre el navegador en:
-
+### 3. Abre el navegador en:
 ```bash
    http://localhost:5173
 ```
