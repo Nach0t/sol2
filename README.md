@@ -15,14 +15,6 @@
 - Navegador: Última versión de Chrome, Firefox o Edge
 - Resolución de Pantalla: 1280x720
 
-🚀 **Requisitos Recomendados**
-- Sistema Operativo: Windows 10 / macOS 11 / Linux (distribuciones modernas)
-- Procesador: Intel Core i5 de 9ª generación o equivalente AMD
-- Memoria RAM: 12 GB
-- Tarjeta Gráfica: NVIDIA GTX 2060 o superior (compatible con WebGL 2.0)
-- Navegador: Última versión de Chrome, Firefox o Edge
-- Resolución de Pantalla: 1920x1080
-
 ---
 
 ## 🛠 Tecnologías Utilizadas
