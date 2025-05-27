@@ -1,4 +1,4 @@
-# Etapa 1: Construcción
+# Etapa 1: build de frontend con Node
 FROM node:18-alpine AS build-stage
 
 WORKDIR /app
@@ -8,15 +8,15 @@ COPY frontend/package*.json ./
 
 RUN npm install
 
-# Copiar todo el frontend
-COPY frontend ./
+# Copiar todo el código del frontend
+COPY frontend/ .
 
 RUN npm run build
 
-# Etapa 2: Servir con nginx
+# Etapa 2: servir el build con nginx
 FROM nginx:stable-alpine AS production-stage
 
-# Copiar archivos generados en la etapa de build al servidor nginx
+# Copiar build generado a carpeta pública de nginx
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 EXPOSE 80
