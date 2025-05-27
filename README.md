@@ -40,8 +40,7 @@
 
 ## 🚀 Instrucciones para Ejecutar la Aplicación Localmente
 
-### Para Linux/macOS  
-[![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=F0F0F0)](#) [![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](#)
+### Para macOS [![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=F0F0F0)](#)  /Linux [![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](#)
 
 # Instalar npm (si no lo tienes instalado) - para Debian/Ubuntu
 
