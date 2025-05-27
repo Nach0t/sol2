@@ -130,29 +130,27 @@ http://localhost:5173
 
 
 
-## 🐳 Cómo Ejecutar con Docker
-
+## 🐳 Cómo Ejecutar con Docker  
 ![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/docker.yml/badge.svg)
 
-1. Clona el repositorio (opcional si solo usas Docker Hub):
+Puedes ejecutar esta aplicación directamente usando Docker, sin necesidad de clonar el repositorio.
 
-   ```bash
-   git clone https://github.com/Nach0t/Dead-Rising.git
-   cd Dead-Rising
+### 1. Descarga la imagen desde Docker Hub  
+```bash
+   docker pull nach0t/dead-rising:latest
    ```
 
 2. Ejecuta el contenedor desde Docker Hub:
 
    ```bash
-   docker pull nach0t/dead-rising:latest
    docker run -p 5173:5173 nach0t/dead-rising:latest
    ```
 
 3. Abre el navegador en:
 
-   ```bash
+```bash
    http://localhost:5173
-   ```
+```
 
 ---
 
