@@ -26,3 +26,4 @@ jobs:
         file: Dockerfile
         push: true
         tags: nach0t/dead-rising:latest
+        
