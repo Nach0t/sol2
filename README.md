@@ -38,31 +38,22 @@
 
 ## 🚀 Instrucciones para Ejecutar la Aplicación Localmente
 
-1. **Clonar el repositorio:**
-```bash
+# Instalar npm (si no lo tienes instalado) - para Debian/Ubuntu
+sudo apt update
+sudo apt install npm
+
+# Clonar el repositorio
 git clone https://github.com/Nach0t/Dead-Rising.git
 cd Dead-Rising/frontend
-```
 
-2. **Instalar pnpm (si no lo tienes):**
-```bash
-npm install -g pnpm
-```
+# Instalar dependencias
+npm install
 
-3. **Instalar dependencias:**
-```bash
-pnpm install
-```
+# Ejecutar el servidor de desarrollo
+npm run dev
 
-4. **Ejecutar el servidor de desarrollo:**
-```bash
-pnpm dev
-```
-
-5. **Abrir el navegador en:**
-```bash
+# Luego abre en tu navegador:
 http://localhost:5173
-```
 
 ---
 
