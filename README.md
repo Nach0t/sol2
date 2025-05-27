@@ -65,7 +65,7 @@ http://localhost:5173
 
 ## 🐳 Cómo Ejecutar con Docker
 
-Este proyecto utiliza el workflow [`Docker Build and Push`](https://github.com/Nach0t/Dead-Rising/blob/main/.github/workflows/docker.yml) para construir y publicar automáticamente la imagen en Docker Hub.
+![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/docker.yml/badge.svg)
 
 1. Clona el repositorio (opcional si solo usas Docker Hub):
 
