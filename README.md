@@ -1,4 +1,7 @@
 
+![CI/CD](https://github.com/Nach0t/Dead-Rising/actions/workflows/CI.yml/badge.svg)
+![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/Lint.yml/badge.svg)
+
 # Dead Rising - Juego Web
 
 **Dead Rising** es un juego web interactivo desarrollado con tecnologías modernas como Vue.js, Vite y Docker. Este proyecto combina un desarrollo frontend ágil con herramientas profesionales como integración continua (CI/CD), pruebas unitarias y análisis de código.
@@ -85,7 +88,11 @@ http://localhost:5173
 
 ## 🔄 CI/CD con GitHub Actions
 
+
 ### CI.yml
+
+![CI](https://github.com/Nach0t/Dead-Rising/actions/workflows/CI.yml/badge.svg)
+
 - Instala Node.js y pnpm
 - Instala dependencias
 - Compila el frontend con Vite
@@ -93,12 +100,12 @@ http://localhost:5173
 - Realiza login en Docker Hub
 - Publica automáticamente como `nach0t/dead-rising:latest`
 
-➡ Ver archivo: https://github.com/Nach0t/Dead-Rising/blob/main/.github/workflows/CI.yml
-
 ---
 
 ### Lint.yml
+
+![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/Lint.yml/badge.svg)
+
 - Ejecuta verificación de estilo y formato con ESLint y Prettier
 - Garantiza calidad y consistencia del código
 
-➡ Ver archivo: https://github.com/Nach0t/Dead-Rising/blob/main/.github/workflows/Lint.yml
