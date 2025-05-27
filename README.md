@@ -2,6 +2,8 @@
 
 ![CI/CD](https://github.com/Nach0t/Dead-Rising/actions/workflows/CI.yml/badge.svg)
 ![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/Lint.yml/badge.svg)
+![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/docker.yml/badge.svg)
+
 
 # Dead Rising - Juego Web
 
