@@ -1,0 +1,15 @@
+name: Lighthouse CI
+
+on: [push]
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Instalar dependencias
+        run: npm install
+      - name: Instalar Lighthouse
+        run: npm install -g @lhci/cli
+      - name: Ejecutar Lighthouse
+        run: lhci autorun
