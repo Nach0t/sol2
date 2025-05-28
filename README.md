@@ -3,6 +3,8 @@
 ![CI/CD](https://github.com/Nach0t/Dead-Rising/actions/workflows/CI.yml/badge.svg)
 ![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/Lint.yml/badge.svg)
 ![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/docker.yml/badge.svg)
+![Lint](https://github.com/Nach0t/Dead-Rising/actions/workflows/lighthouse.yml/badge.svg)
+
 
 
 # Dead Rising - Juego Web
@@ -205,3 +207,10 @@ docker pull nach0t/dead-rising:latest
 
 ---
 
+### lighthouse.yml
+
+![Lighthouse](https://github.com/Nach0t/Dead-Rising/actions/workflows/lighthouse.yml/badge.svg)
+
+- Ejecuta Lighthouse CI para auditar el rendimiento, accesibilidad, mejores prácticas y SEO
+- Construye el frontend antes de la auditoría
+- Genera reportes automáticos para asegurar la calidad del sitio web
