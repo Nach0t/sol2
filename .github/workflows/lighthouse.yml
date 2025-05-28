@@ -26,6 +26,13 @@ jobs:
         working-directory: ./frontend
         run: npm run build
 
+      - name: Rename .lighthouserc.js to .lighthouserc.cjs (if exists)
+        working-directory: ./frontend
+        run: |
+          if [ -f .lighthouserc.js ]; then
+            mv .lighthouserc.js .lighthouserc.cjs
+          fi
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli
 
