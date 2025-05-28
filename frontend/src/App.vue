@@ -43,6 +43,8 @@ export default {
     },
     returnToMenu() {
       this.showMenu = true
+      // Detener la generación de enemigos si es necesario
+      window.stopSpawning = false; // o true, según el caso
     }
   },
   mounted() {

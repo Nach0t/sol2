@@ -53,10 +53,10 @@ onMounted(() => {
 
     const box = new THREE.Box3().setFromObject(mapa)
     window.mapLimits = {
-      xMin: box.min.x,
-      xMax: box.max.x,
-      zMin: box.min.z,
-      zMax: box.max.z
+      xMin: box.min.x + 1,
+      xMax: box.max.x - 1,
+      zMin: box.min.z + 1,
+      zMax: box.max.z - 1
     }
   })
 

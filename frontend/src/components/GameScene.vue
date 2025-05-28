@@ -65,10 +65,10 @@ function cancelConfirmations() {
 }
 
 function goToMainMenu() {
-  resetScene()
+  resetScene() // Esto restablece la escena antes de regresar al menú
   paused.value = false
   showConfirmMenu.value = false
-  emit('goToMenu')
+  emit('goToMenu') // Emitir el evento para volver al menú
 }
 </script>
 

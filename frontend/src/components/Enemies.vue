@@ -18,8 +18,8 @@ let spawnInterval
 let player
 const loader = new GLTFLoader()
 const clock = new THREE.Clock()
-const enemySpeed = 0.025
-const maxEnemies = 20
+const enemySpeed = 0.015
+const maxEnemies = 5
 
 const attackSound = new Audio('/sounds/zombie-scream.mp3')
 
@@ -47,10 +47,10 @@ function loadZombieModel() {
     loader.load('/models/zombie.glb', gltf => {
       const zombie = gltf.scene
 
-      // ✅ Escala reducida
+      // Escala reducida
       zombie.scale.set(0.28, 0.28, 0.28)
 
-      // ✅ Alineado con el suelo
+      // Alineado con el suelo
       zombie.position.y = 0.25
 
       const mixer = new THREE.AnimationMixer(zombie)
@@ -66,7 +66,7 @@ function loadZombieModel() {
         zombie.userData.punch = mixer.clipAction(punchAnim)
       }
 
-      // ✅ Hitbox
+      // Hitbox
       zombie.box = new THREE.Box3()
       zombie.boxHelper = new THREE.Box3Helper(zombie.box, 0xffff00)
       scene.add(zombie.boxHelper)
@@ -130,7 +130,7 @@ function checkBulletCollisions() {
       bullet.box.setFromCenterAndSize(bullet.position, new THREE.Vector3(0.8, 0.8, 0.8))
 
       if (enemy.box.intersectsBox(bullet.box)) {
-        console.log('🟦 Colisión bala-zombie')
+        console.log('Colisión bala-zombie')
 
         enemy.traverse(obj => {
           if (obj.isMesh && obj.material?.color) obj.material.color.set(0x0000ff)
