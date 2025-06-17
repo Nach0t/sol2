@@ -35,5 +35,18 @@ docker run -p 5173:5173 nach0t/dead-rising:latest
 
 ## ✍️ Autores
 
-[![Ignacio Rehbein](https://img.shields.io/badge/GitHub-Nach0t-181717?style=for-the-badge&logo=github)](https://github.com/Nach0t)  
-[![Fernando Rivera](https://img.shields.io/badge/GitHub-fernando200317-181717?style=for-the-badge&logo=github)](https://github.com/fernando200317)
+## ✍️ Autores
+
+<a href="https://github.com/Nach0t" target="_blank">
+  <img src="https://github.com/Nach0t.png" width="80" style="border-radius:50%" alt="Nach0t"/>
+  <br />
+  Ignacio Rehbein
+</a>
+
+<br/>
+
+<a href="https://github.com/fernando200317" target="_blank">
+  <img src="https://github.com/fernando200317.png" width="80" style="border-radius:50%" alt="fernando200317"/>
+  <br />
+  Fernando Rivera
+</a>
