@@ -1,24 +1,31 @@
-# Etapa 1: build de frontend con Node
+# Etapa 1: build del frontend con Node
 FROM node:18-alpine AS build-stage
 
 WORKDIR /app
 
-# Copiar package.json y package-lock.json para instalar dependencias
-COPY frontend/package*.json ./
+# Copiar archivos de configuración
+COPY frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml frontend/package.json ./
 
-RUN npm install
+# Instalar pnpm y dependencias
+RUN npm install -g pnpm && pnpm install
 
-# Copiar todo el código del frontend
+# Copiar todo el código fuente
 COPY frontend/ .
 
-RUN npm run build
+# Compilar la app
+RUN pnpm run build
 
-# Etapa 2: servir el build con nginx
+# Etapa 2: servir el frontend con nginx
 FROM nginx:stable-alpine AS production-stage
 
-# Copiar build generado a carpeta pública de nginx
+# Copiar build generado al servidor nginx
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+# Exponer puerto requerido por la rúbrica
+EXPOSE 8000
 
+# Reemplazar configuración default de nginx si tienes un nginx.conf personalizado (opcional)
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+# Comando para mantener nginx corriendo
 CMD ["nginx", "-g", "daemon off;"]
