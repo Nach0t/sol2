@@ -1,39 +1,63 @@
-# Dead Rising - Proyecto General
+# Dead Rising - Frontend
 
-Este repositorio contiene todo el proyecto del juego Dead Rising.
-
----
-
-## 🧩 Estructura del Repositorio
-
-| Carpeta     | Descripción                                                       |
-|-------------|-------------------------------------------------------------------|
-| frontend/   | Juego completo en Vue + Vite + Three.js (terminado y funcional)  |
-| backend/    | En desarrollo: API para autenticación, ranking y lógica de datos |
+Este documento describe cómo ejecutar y desarrollar el **frontend** del juego.
 
 ---
 
-## 🚀 CI/CD con GitHub Actions
+## 📂 Estructura
 
-- CI.yml: build + test + Docker + push
-- Lint.yml: ESLint, Stylelint, Prettier
-- Docker.yml: build Docker + push
-- Lighthouse.yml: análisis de calidad y rendimiento
+El frontend está contenido dentro de la carpeta `frontend/` y fue desarrollado con:
+
+- Vue 3
+- Vite
+- Three.js
+- pnpm (también compatible con npm)
+- ESLint, Prettier, Stylelint
+- Vitest para pruebas unitarias
 
 ---
 
-## 🐳 Docker Hub
+## ▶️ Ejecutar el juego localmente
 
-Imagen: [nach0t/dead-rising](https://hub.docker.com/r/nach0t/dead-rising)
+```bash
+git clone https://github.com/Nach0t/Dead-Rising.git
+cd Dead-Rising/frontend
+pnpm install        # o npm install
+pnpm run dev        # o npm run dev
+```
+
+Abre en tu navegador:
+```
+http://localhost:5173
+```
+
+---
+
+## 🧪 Pruebas Unitarias
+
+```bash
+pnpm run test
+```
+
+---
+
+## 🎨 Linter y Formato
+
+```bash
+pnpm run lint         # Código JS/Vue
+pnpm run lint:fix     # Arreglar errores de estilo
+pnpm run stylelint    # CSS/SCSS/Vue estilos
+pnpm run stylelint:fix
+pnpm run format       # Prettier
+```
+
+---
+
+## 🐳 Docker
 
 ```bash
 docker pull nach0t/dead-rising:latest
 docker run -p 5173:5173 nach0t/dead-rising:latest
 ```
 
----
-
-## ✍️ Autores
-
-[![Ignacio Rehbein](https://img.shields.io/badge/GitHub-Nach0t-181717?style=for-the-badge&logo=github)](https://github.com/Nach0t)  
-[![Fernando Rivera](https://img.shields.io/badge/GitHub-fernando200317-181717?style=for-the-badge&logo=github)](https://github.com/fernando200317)
+Abre [http://localhost:5173](http://localhost:5173)
