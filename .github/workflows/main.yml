@@ -13,31 +13,27 @@ jobs:
         working-directory: frontend
 
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Instalar pnpm
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
-      - name: Instalar dependencias
-        run: pnpm install
+      - run: pnpm install
 
   lint:
-    name: ✅ Lint del código
+    name: ✅ Lint
     runs-on: ubuntu-latest
     needs: install
     defaults:
       run:
         working-directory: frontend
-
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
@@ -47,17 +43,17 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
       - run: pnpm install
       - run: pnpm run lint
 
   test:
-    name: 🧪 Pruebas Unitarias
+    name: 🧪 Pruebas
     runs-on: ubuntu-latest
     needs: lint
     defaults:
       run:
         working-directory: frontend
-
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
@@ -67,6 +63,7 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
       - run: pnpm install
       - run: pnpm run test
 
@@ -76,5 +73,4 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v3
-      - name: Build de imagen Docker
-        run: docker build -t dead-rising:latest .
+      - run: docker build -t dead-rising:latest .
