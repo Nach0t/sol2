@@ -11,7 +11,7 @@ El frontend está contenido dentro de la carpeta `frontend/` y fue desarrollado 
 - Vue 3
 - Vite
 - Three.js
-- pnpm (también compatible con npm)
+- pnpm 
 - ESLint, Prettier, Stylelint
 - Vitest para pruebas unitarias
 
