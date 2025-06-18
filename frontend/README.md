@@ -22,15 +22,15 @@ El frontend está contenido dentro de la carpeta `frontend/` y fue desarrollado 
 ```bash
 git clone https://github.com/Nach0t/Dead-Rising.git
 cd Dead-Rising/frontend
-pnpm install        # o npm install
-pnpm run dev        # o npm run dev
+pnpm install        
+pnpm run dev        
 ```
 
 Abre en tu navegador:
 ```
 http://localhost:5173
 ```
-
+|
 ---
 
 ## 🧪 Pruebas Unitarias
