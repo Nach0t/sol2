@@ -28,7 +28,7 @@ const emit = defineEmits(['goToMenu']) // para emitir al componente padre
 
 let player
 const bullets = []
-const bulletSpeed = 10
+const bulletSpeed = 1
 let bulletTemplate = null
 const shootSound = new Audio('/sounds/shoot.mp3')
 
@@ -39,7 +39,7 @@ pitchObject.add(camera)
 yawObject.add(pitchObject)
 scene.add(yawObject)
 
-let speed = 0.1
+let speed = 0.01
 const gravity = -0.01
 let isJumping = false
 let verticalSpeed = 0

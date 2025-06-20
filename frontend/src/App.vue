@@ -1,7 +1,20 @@
 <template>
   <div id="app">
+    <!-- Intro Video -->
+    <div v-if="showIntro" class="intro-video">
+      <video
+        ref="introVideo"
+        @ended="onIntroEnd"
+        class="video-element"
+        playsinline
+      >
+        <source src="/video/intro.mp4" type="video/mp4" />
+        Tu navegador no soporta videos HTML5.
+      </video>
+    </div>
+
     <!-- Menú principal -->
-    <div v-if="showMenu" class="menu">
+    <div v-else-if="showMenu" class="menu">
       <h1>Dead Rising</h1>
 
       <div class="menu-buttons">
@@ -29,9 +42,12 @@ export default {
   components: { GameScene },
   data() {
     return {
-      showMenu: true,
+      showIntro: true,
+      showMenu: false,
       showInstructions: false,
-      animationFrameId: null
+      animationFrameId: null,
+      enterHoldStart: null,
+      enterHoldTimeout: null
     }
   },
   methods: {
@@ -43,11 +59,23 @@ export default {
     },
     returnToMenu() {
       this.showMenu = true
-      // Detener la generación de enemigos si es necesario
-      window.stopSpawning = false; // o true, según el caso
+      window.stopSpawning = false
+    },
+    onIntroEnd() {
+      this.showIntro = false
+      this.showMenu = true
+    },
+    skipIntro() {
+      const video = this.$refs.introVideo
+      if (video) {
+        video.pause()
+        video.currentTime = 0
+      }
+      this.onIntroEnd()
     }
   },
   mounted() {
+    // Render loop
     const animate = () => {
       this.animationFrameId = requestAnimationFrame(animate)
       updateFunctions.forEach(fn => fn())
@@ -58,6 +86,42 @@ export default {
       }
     }
     animate()
+
+    // Intro video con sonido tras interacción
+    const video = this.$refs.introVideo
+    const playVideoWithSound = () => {
+      if (video) {
+        video.muted = false
+        video.volume = 1.0
+        video.play().catch(e => console.warn('Autoplay failed:', e))
+      }
+      window.removeEventListener('keydown', playVideoWithSoundOnce)
+      window.removeEventListener('mousedown', playVideoWithSoundOnce)
+    }
+
+    const playVideoWithSoundOnce = () => {
+      playVideoWithSound()
+    }
+
+    window.addEventListener('keydown', playVideoWithSoundOnce)
+    window.addEventListener('mousedown', playVideoWithSoundOnce)
+
+    // Detectar mantener presionado Enter por 5 segundos
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !this.enterHoldStart) {
+        this.enterHoldStart = Date.now()
+        this.enterHoldTimeout = setTimeout(() => {
+          if (this.showIntro) this.skipIntro()
+        }, 5000)
+      }
+    })
+
+    window.addEventListener('keyup', e => {
+      if (e.key === 'Enter') {
+        this.enterHoldStart = null
+        clearTimeout(this.enterHoldTimeout)
+      }
+    })
 
     this.cancelAnimation = () => {
       if (this.animationFrameId) {
@@ -95,5 +159,22 @@ html, body, #app {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+.intro-video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
