@@ -296,3 +296,158 @@ body {
   color: white;
   box-shadow: 0 0 10px red;
 }
+
+
+.input-zombie {
+  padding: 0.6em 1em;
+  font-size: 1.2em;
+  background: rgb(0 0 0 / 70%);
+  border: 2px solid #f00;
+  color: #f1c40f;
+  border-radius: 10px;
+  margin-bottom: 1em;
+  width: 250px;
+  text-align: center;
+}
+
+.input-zombie::placeholder {
+  color: #ffaaaa;
+}
+
+.button-zombie {
+  padding: 0.6em 1.2em;
+  font-size: 1.3em;
+  background: rgb(0 0 0 / 70%);
+  color: #f00;
+  border: 3px solid #f00;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px red;
+  backdrop-filter: blur(3px);
+  margin-top: 0.5em;
+}
+
+.button-zombie:hover {
+  background: rgb(255 0 0 / 60%);
+  color: white;
+  box-shadow: 0 0 20px #f00;
+  transform: scale(1.05);
+}
+
+.button-zombie.small {
+  font-size: 1em;
+  padding: 0.4em 1em;
+}
+
+.message-zombie {
+  margin-top: 1em;
+  color: #fff;
+  font-weight: bold;
+}
+
+.welcome-message {
+  position: absolute;
+  top: 30px;
+  width: 100%;
+  text-align: center;
+  font-size: 28px;
+  color: #fff000;
+  font-family: 'Chiller', sans-serif;
+  text-shadow: 2px 2px 4px #000;
+  z-index: 10000;
+  animation: fadeInOut 4s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+
+.auth-container {
+  background-color: rgba(0, 0, 0, 0.75);
+  padding: 30px 20px;
+  border-radius: 12px;
+  width: 340px;
+  margin: 0 auto;
+  text-align: center;
+  border: 3px solid red;
+  box-shadow: 0 0 20px red;
+}
+
+.input-zombie,
+.password-wrapper input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  background-color: #111;
+  color: white;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.password-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.password-wrapper input {
+  padding-right: 38px;
+}
+
+.eye {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+  color: orange;
+}
+
+.password-requirements {
+  color: red;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: -8px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+
+.button-zombie.submit {
+  background-color: red;
+  color: yellow;
+  font-weight: bold;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 2px solid orange;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 12px auto 0 auto; 
+  display: block;
+  width: fit-content;
+  min-width: 140px;
+  text-align: center;
+}
+
+
+.button-zombie.small {
+  background-color: transparent;
+  color: orange;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+.message-zombie {
+  color: white;
+  font-weight: bold;
+  margin-bottom: 10px;
+}

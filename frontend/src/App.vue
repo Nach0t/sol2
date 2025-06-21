@@ -2,55 +2,93 @@
   <div id="app">
     <!-- Intro Video -->
     <div v-if="showIntro" class="intro-video">
-      <video
-        ref="introVideo"
-        @ended="onIntroEnd"
-        class="video-element"
-        playsinline
-      >
+      <video ref="introVideo" @ended="onIntroEnd" class="video-element" playsinline>
         <source src="/video/intro.mp4" type="video/mp4" />
         Tu navegador no soporta videos HTML5.
       </video>
     </div>
 
+    <!-- Login/Register -->
+    <div v-else-if="!isAuthenticated" class="menu">
+      <LoginForm
+        v-if="showLogin"
+        @authenticated="onAuthenticated"
+        @switchToRegister="showLogin = false"
+      />
+      <RegisterForm
+        v-else
+        @authenticated="onAuthenticated"
+        @switchToLogin="showLogin = true"
+      />
+    </div>
+
     <!-- Menú principal -->
     <div v-else-if="showMenu" class="menu">
+      <div class="welcome-message">¡Bienvenido, {{ nombreUsuario }}!</div>
       <h1>Dead Rising</h1>
-
       <div class="menu-buttons">
         <button @click="startGame">Iniciar</button>
         <button @click="toggleInstructions">¿Cómo jugar?</button>
+        <button @click="logout" class="logout-button">Cerrar sesión</button>
       </div>
-
       <div v-if="showInstructions" class="instructions">
         <p>🧟 Usa <b>W, A, S, D</b> para moverte, click izquierdo para disparar.</p>
         <p>🎯 ¡Evita que los zombies te toquen o perderás vida!</p>
       </div>
     </div>
 
-    <!-- Escena del juego -->
+    <!-- Juego -->
     <GameScene v-else @goToMenu="returnToMenu" />
   </div>
 </template>
 
 <script>
 import GameScene from '@/components/GameScene.vue'
+import LoginForm from '@/components/LoginForm.vue'
+import RegisterForm from '@/components/RegisterForm.vue'
 import { renderer, scene, camera, updateFunctions } from './sceneGlobals'
 
 export default {
   name: 'App',
-  components: { GameScene },
+  components: { GameScene, LoginForm, RegisterForm },
   data() {
     return {
       showIntro: true,
       showMenu: false,
+      showLogin: true,
       showInstructions: false,
+      isAuthenticated: false,
+      nombreUsuario: '',
       animationFrameId: null,
       enterHoldStart: null,
       enterHoldTimeout: null
     }
   },
   methods: {
+    onAuthenticated(nombre) {
+      this.nombreUsuario = nombre || 'Jugador'
+      localStorage.setItem('nombreUsuario', this.nombreUsuario)
+      this.isAuthenticated = true
+      this.showMenu = true
+    },
+    logout() {
+      this.isAuthenticated = false
+      this.showMenu = false
+      this.showLogin = true
+      this.nombreUsuario = ''
+      localStorage.removeItem('nombreUsuario')
+    },
+    onIntroEnd() {
+      this.showIntro = false
+    },
+    skipIntro() {
+      const video = this.$refs.introVideo
+      if (video) {
+        video.pause()
+        video.currentTime = 0
+      }
+      this.onIntroEnd()
+    },
     startGame() {
       this.showMenu = false
     },
@@ -60,22 +98,16 @@ export default {
     returnToMenu() {
       this.showMenu = true
       window.stopSpawning = false
-    },
-    onIntroEnd() {
-      this.showIntro = false
-      this.showMenu = true
-    },
-    skipIntro() {
-      const video = this.$refs.introVideo
-      if (video) {
-        video.pause()
-        video.currentTime = 0
-      }
-      this.onIntroEnd()
     }
   },
   mounted() {
-    // Render loop
+    const guardado = localStorage.getItem('nombreUsuario')
+    if (guardado) {
+      this.nombreUsuario = guardado
+      this.isAuthenticated = true
+      this.showMenu = true
+    }
+
     const animate = () => {
       this.animationFrameId = requestAnimationFrame(animate)
       updateFunctions.forEach(fn => fn())
@@ -87,7 +119,6 @@ export default {
     }
     animate()
 
-    // Intro video con sonido tras interacción
     const video = this.$refs.introVideo
     const playVideoWithSound = () => {
       if (video) {
@@ -99,14 +130,10 @@ export default {
       window.removeEventListener('mousedown', playVideoWithSoundOnce)
     }
 
-    const playVideoWithSoundOnce = () => {
-      playVideoWithSound()
-    }
-
+    const playVideoWithSoundOnce = () => playVideoWithSound()
     window.addEventListener('keydown', playVideoWithSoundOnce)
     window.addEventListener('mousedown', playVideoWithSoundOnce)
 
-    // Detectar mantener presionado Enter por 5 segundos
     window.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !this.enterHoldStart) {
         this.enterHoldStart = Date.now()
@@ -115,7 +142,6 @@ export default {
         }, 5000)
       }
     })
-
     window.addEventListener('keyup', e => {
       if (e.key === 'Enter') {
         this.enterHoldStart = null
@@ -124,57 +150,49 @@ export default {
     })
 
     this.cancelAnimation = () => {
-      if (this.animationFrameId) {
-        cancelAnimationFrame(this.animationFrameId)
-      }
+      if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId)
     }
   },
   beforeUnmount() {
     if (this.cancelAnimation) this.cancelAnimation()
-
     updateFunctions.length = 0
-
     while (scene.children.length > 0) {
       const obj = scene.children[0]
       scene.remove(obj)
       if (obj.geometry) obj.geometry.dispose()
       if (obj.material) {
-        if (Array.isArray(obj.material)) {
-          obj.material.forEach(m => m.dispose())
-        } else {
-          obj.material.dispose()
-        }
+        Array.isArray(obj.material)
+          ? obj.material.forEach(m => m.dispose())
+          : obj.material.dispose()
       }
     }
-
     renderer.dispose()
   }
 }
 </script>
 
 <style>
-html, body, #app {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+.welcome-message {
+  color: yellow;
+  font-family: 'Creepster', cursive;
+  font-size: 22px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-.intro-video {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+.logout-button {
+  margin-top: 12px;
   background-color: black;
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: 2px solid red;
+  color: orange;
+  padding: 8px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
 }
-
-.video-element {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.logout-button:hover {
+  background-color: red;
+  color: yellow;
 }
 </style>

@@ -2,28 +2,26 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const cors = require('cors');
 
-// Rutas
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const rankingRouter = require('./routes/ranking');
-const registerRouter = require('./routes/register'); // Si agregas register
+const connectDB = require('./src/database/mongo');
+connectDB();
 
 const app = express();
 
-// Middlewares
 app.use(logger('dev'));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-// Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rutas principales
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/ranking', rankingRouter);
-app.use('/api', registerRouter); // para POST /api/register
+// Rutas
+app.use('/users', require('./src/routes/users'));
+app.use('/ranking', require('./src/routes/ranking'));
+app.use('/api/register', require('./src/routes/register'));
+app.use('/api/login', require('./src/routes/login'));
+
+app.get('/', (req, res) => res.send('API funcionando 🚀'));
 
 module.exports = app;
