@@ -43,6 +43,11 @@
 
     <!-- Juego -->
     <GameScene v-else @goToMenu="returnToMenu" />
+
+    <!-- Botón "Volver al inicio" al morir -->
+    <div v-if="muerto" class="death-overlay">
+      <button class="btn-back-menu" @click="returnToMenu">Volver al inicio</button>
+    </div>
   </div>
 </template>
 
@@ -67,7 +72,8 @@ export default {
       nombreUsuario: '',
       animationFrameId: null,
       enterHoldStart: null,
-      enterHoldTimeout: null
+      enterHoldTimeout: null,
+      muerto: false
     }
   },
   methods: {
@@ -111,7 +117,9 @@ export default {
     },
     returnToMenu() {
       this.showMenu = true
+      this.muerto = false
       window.stopSpawning = false
+      window.muerto = false
     }
   },
   mounted() {
@@ -129,6 +137,10 @@ export default {
         renderer.render(scene, camera)
       } catch (e) {
         console.error('Render error:', e)
+      }
+
+      if (window.muerto && !this.muerto) {
+        this.muerto = true
       }
     }
     animate()
@@ -155,7 +167,14 @@ export default {
           if (this.showIntro) this.skipIntro()
         }, 5000)
       }
+
+      // Bloquear ESC si está muerto
+      if (e.key === 'Escape' && this.muerto) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
     })
+
     window.addEventListener('keyup', e => {
       if (e.key === 'Enter') {
         this.enterHoldStart = null
@@ -205,7 +224,33 @@ export default {
   border-radius: 6px;
   transition: 0.3s;
 }
+
 .logout-button:hover {
+  background-color: red;
+  color: yellow;
+}
+
+.death-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+.btn-back-menu {
+  padding: 14px 28px;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: black;
+  color: white;
+  border: 3px solid red;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-back-menu:hover {
   background-color: red;
   color: yellow;
 }

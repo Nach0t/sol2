@@ -451,3 +451,194 @@ body {
   font-weight: bold;
   margin-bottom: 10px;
 }
+
+
+.damage-ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.07);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  z-index: 1002;
+  pointer-events: none;
+  animation: fadeOutRing 0.8s forwards;
+}
+
+.damage-sector {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  background: conic-gradient(
+    rgba(255, 0, 0, 0.5) 0deg 40deg,
+    transparent 40deg 360deg
+  );
+  border-radius: 50%;
+  transform-origin: center;
+  animation: fadeOutRing 0.8s forwards;
+}
+
+@keyframes fadeOutRing {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.welcome-message {
+  color: yellow;
+  font-family: 'Creepster', cursive;
+  font-size: 22px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.logout-button {
+  margin-top: 12px;
+  background-color: black;
+  border: 2px solid red;
+  color: orange;
+  padding: 8px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.logout-button:hover {
+  background-color: red;
+  color: yellow;
+}
+
+.hud-top {
+  position: fixed;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  padding: 0 20px;
+}
+
+.hud-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.player-name {
+  font-family: 'Creepster', cursive;
+  color: yellow;
+  font-size: 20px;
+  margin-bottom: 4px;
+  text-shadow: 2px 2px 4px black;
+}
+
+.health-bar-container {
+  width: 200px;
+  height: 20px;
+  border: 2px solid #333;
+  background: #555;
+}
+
+.health-bar {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.hud-center .cronometro {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 6px black;
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zombie-logo {
+  width: 40px;
+  height: auto;
+  filter: drop-shadow(0 0 5px red);
+}
+
+.zombie-kills {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 3px red;
+}
+
+.crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: red;
+  user-select: none;
+  pointer-events: none;
+}
+
+.pointer-lock-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+  z-index: 1;
+}
+
+
+.tab-stats-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: black;
+  border: 2px solid red;
+  padding: 20px 40px;
+  z-index: 2000;
+  font-family: 'Creepster', cursive;
+  text-align: center;
+  box-shadow: 0 0 10px red;
+}
+
+.tab-stats-panel h2 {
+  font-size: 28px;
+  color: yellow;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 6px black;
+}
+
+.tab-stats-panel table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tab-stats-panel th,
+.tab-stats-panel td {
+  border: 1px solid red;
+  padding: 10px 20px;
+  color: white;
+  text-shadow: 1px 1px 3px black;
+}
+
+.tab-stats-panel th {
+  background-color: red;
+  color: white;
+  font-size: 20px;
+}
+
+.tab-stats-panel td {
+  font-size: 18px;
+}

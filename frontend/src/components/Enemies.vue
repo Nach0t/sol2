@@ -46,11 +46,7 @@ function loadZombieModel() {
   return new Promise((resolve, reject) => {
     loader.load('/models/zombie.glb', gltf => {
       const zombie = gltf.scene
-
-      // Escala reducida
       zombie.scale.set(0.28, 0.28, 0.28)
-
-      // Alineado con el suelo
       zombie.position.y = 0.25
 
       const mixer = new THREE.AnimationMixer(zombie)
@@ -66,7 +62,6 @@ function loadZombieModel() {
         zombie.userData.punch = mixer.clipAction(punchAnim)
       }
 
-      // Hitbox
       zombie.box = new THREE.Box3()
       zombie.boxHelper = new THREE.Box3Helper(zombie.box, 0xffff00)
       scene.add(zombie.boxHelper)
@@ -88,6 +83,10 @@ function loadZombieModel() {
         if (idx !== -1) {
           enemies.splice(idx, 1)
           mixers.splice(idx, 1)
+        }
+
+        if (typeof window.incrementZombieKills === 'function') {
+          window.incrementZombieKills()
         }
       }
 

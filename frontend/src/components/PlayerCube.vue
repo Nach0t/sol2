@@ -28,6 +28,14 @@
 
     <div @click="enablePointerLock" class="pointer-lock-area"></div>
     <div class="crosshair">+</div>
+
+    <div v-if="mostrarResumen" class="resumen-tab">
+      <h2>Resumen</h2>
+      <p><strong>Jugador:</strong> {{ nombreJugador }}</p>
+      <p><strong>Tiempo:</strong> {{ tiempoFormateado }}</p>
+      <p><strong>Zombies eliminados:</strong> {{ zombiesEliminados }}</p>
+      <p><strong>Vida:</strong> {{ health }}</p>
+    </div>
   </div>
 </template>
 
@@ -36,6 +44,7 @@ import { onMounted, onBeforeUnmount, ref, watch, computed } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { scene, camera, updateFunctions } from '@/sceneGlobals'
+import axios from 'axios'
 
 const props = defineProps({ paused: Boolean })
 const emit = defineEmits(['goToMenu'])
@@ -67,6 +76,8 @@ const immunityTime = 2000
 const nombreJugador = localStorage.getItem('nombreUsuario') || 'Jugador'
 const zombiesEliminados = ref(0)
 const tiempo = ref(0)
+let rankingGuardado = false
+const mostrarResumen = ref(false)
 
 const tiempoFormateado = computed(() => {
   const min = Math.floor(tiempo.value / 60)
@@ -76,6 +87,46 @@ const tiempoFormateado = computed(() => {
 
 onMounted(() => {
   setInterval(() => tiempo.value++, 1000)
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Tab') {
+      e.preventDefault()
+      mostrarResumen.value = !mostrarResumen.value
+    }
+  })
+})
+
+watch(health, async val => {
+  if (val <= 0 && !rankingGuardado) {
+    speed = 0
+    canBeHit = false
+    window.stopSpawning = true
+    const puntaje = zombiesEliminados.value * 10 + tiempo.value
+
+    try {
+      await axios.post('http://localhost:3000/ranking', {
+        nombreUsuario: nombreJugador,
+        zombies: zombiesEliminados.value,
+        tiempo: tiempo.value,
+        puntaje
+      })
+      console.log('✅ Ranking enviado')
+      rankingGuardado = true
+    } catch (err) {
+      console.error('❌ Error al enviar ranking:', err)
+    }
+  }
+})
+
+window.incrementZombieKills = () => {
+  zombiesEliminados.value++
+  console.log('✅ Zombie eliminado. Total:', zombiesEliminados.value)
+}
+
+
+const healthColor = computed(() => {
+  if (health.value > 60) return '#2ecc71'
+  else if (health.value > 35) return '#f1c40f'
+  else return '#e74c3c'
 })
 
 window.setPlayerHit = () => {
@@ -89,19 +140,7 @@ window.setPlayerHit = () => {
   }, immunityTime)
 }
 
-const healthColor = computed(() => {
-  if (health.value > 60) return '#2ecc71'
-  else if (health.value > 35) return '#f1c40f'
-  else return '#e74c3c'
-})
-
-watch(health, val => {
-  if (val <= 0) {
-    speed = 0
-    canBeHit = false
-    window.stopSpawning = true
-  }
-})
+window.getZombieKillFunction = () => zombiesEliminados
 
 function loadBulletModel(cb) {
   const loader = new GLTFLoader()
@@ -126,7 +165,7 @@ function shoot() {
   bullet.speed = bulletSpeed
   bullet.distanceTravelled = 0
 
-  bullet.box = new THREE.Box3().setFromCenterAndSize(bullet.position, new THREE.Vector3(0.8, 0.8, 0.8))
+  bullet.box = new THREE.Box3().setFromCenterAndSize(bullet.position, new THREE.Vector3(0.5, 0.5, 0.5))
   bullet.boxHelper = new THREE.BoxHelper(bullet, 0xff0000)
   scene.add(bullet.boxHelper)
 
@@ -152,7 +191,7 @@ function updateBullets(delta) {
     bullet.position.addScaledVector(bullet.direction, moveDistance)
     bullet.distanceTravelled += moveDistance
 
-    bullet.box.setFromCenterAndSize(bullet.position, new THREE.Vector3(0.8, 0.8, 0.8))
+    bullet.box.setFromCenterAndSize(bullet.position, new THREE.Vector3(0.5, 0.5, 0.5))
     if (bullet.boxHelper) bullet.boxHelper.update()
 
     if (bullet.distanceTravelled > 100) {
@@ -222,7 +261,6 @@ onMounted(() => {
     if (velocity.length() > 0) {
       velocity.normalize().multiplyScalar(speed)
       const direction = velocity.clone().applyEuler(yawObject.rotation)
-
       const nextPos = player.position.clone().add(direction)
       const nextBox = new THREE.Box3().setFromCenterAndSize(nextPos, new THREE.Vector3(1, 2, 1))
 
@@ -266,7 +304,6 @@ onMounted(() => {
     }
     player.position.y = Math.max(groundY, player.position.y)
     yawObject.position.copy(player.position)
-
     player.box.setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
   })
 
@@ -280,90 +317,3 @@ onBeforeUnmount(() => {
   document.removeEventListener('mousemove', onMouseMove)
 })
 </script>
-
-<style scoped>
-.hud-top {
-  position: fixed;
-  top: 10px;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 1000;
-  padding: 0 20px;
-}
-
-.hud-left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.player-name {
-  font-family: 'Creepster', cursive;
-  color: yellow;
-  font-size: 20px;
-  margin-bottom: 4px;
-  text-shadow: 2px 2px 4px black;
-}
-
-.health-bar-container {
-  width: 200px;
-  height: 20px;
-  border: 2px solid #333;
-  background: #555;
-}
-
-.health-bar {
-  height: 100%;
-  transition: width 0.3s;
-}
-
-.hud-center .cronometro {
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  text-shadow: 2px 2px 6px black;
-}
-
-.hud-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.zombie-logo {
-  width: 40px;
-  height: auto;
-  filter: drop-shadow(0 0 5px red);
-}
-
-.zombie-kills {
-  font-size: 20px;
-  font-weight: bold;
-  color: white;
-  text-shadow: 1px 1px 3px red;
-}
-
-.crosshair {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24px;
-  color: red;
-  user-select: none;
-  pointer-events: none;
-}
-
-.pointer-lock-area {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  cursor: crosshair;
-  z-index: 1;
-}
-</style>

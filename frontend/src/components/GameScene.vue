@@ -20,7 +20,7 @@
 
     <!-- Escena del juego -->
     <ThreeMap v-show="!paused" />
-    <PlayerCube :paused="paused" />
+    <PlayerCube ref="playerRef" :paused="paused" />
     <Enemies :paused="paused" v-show="!paused" />
   </div>
 </template>
@@ -33,24 +33,19 @@ import Enemies from './Enemies.vue'
 import { resetScene } from '@/sceneGlobals'
 
 const emit = defineEmits(['goToMenu'])
-
 const paused = ref(false)
 const showConfirmMenu = ref(false)
+const playerRef = ref(null)
 
 function handleKeydown(e) {
   if (e.key === 'Escape') {
-    paused.value = !paused.value
-    cancelConfirmations()
+    const playerDead = playerRef.value?.health <= 0
+    if (!playerDead) {
+      paused.value = !paused.value
+      cancelConfirmations()
+    }
   }
 }
-
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeydown)
-})
 
 function resumeGame() {
   paused.value = false
@@ -65,13 +60,21 @@ function cancelConfirmations() {
 }
 
 function goToMainMenu() {
-  resetScene() // Esto restablece la escena antes de regresar al menú
+  resetScene()
   paused.value = false
   showConfirmMenu.value = false
-  emit('goToMenu') // Emitir el evento para volver al menú
+  emit('goToMenu')
 }
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <style scoped>
-
+/* Se recomienda agregar estilo de los menús aquí si no está en style.css */
 </style>
