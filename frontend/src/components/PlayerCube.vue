@@ -1,15 +1,29 @@
 <template>
   <div>
+    <!-- HUD SUPERIOR -->
+    <div class="hud-top">
+      <div class="hud-left">
+        <div class="player-name">{{ nombreJugador }}</div>
+        <div class="health-bar-container">
+          <div class="health-bar" :style="{ width: health + '%', backgroundColor: healthColor }"></div>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <div class="cronometro">{{ tiempoFormateado }}</div>
+      </div>
+
+      <div class="hud-right">
+        <img src="/src/assets/logo.png" alt="logo" class="zombie-logo" />
+        <div class="zombie-kills">x{{ zombiesEliminados }}</div>
+      </div>
+    </div>
+
     <div v-if="gotHit" class="hit-message">¡Te dañaron!</div>
 
     <div v-if="health <= 0" class="death-screen">
       <h1>💀 ¡Perdiste!</h1>
       <h2>Que manco</h2>
-    </div>
-
-    <div class="health-bar-container">
-      <div class="health-bar" :style="{ width: health + '%', backgroundColor: healthColor }"></div>
-      <div class="health-text">{{ health }}</div>
     </div>
 
     <div @click="enablePointerLock" class="pointer-lock-area"></div>
@@ -24,7 +38,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { scene, camera, updateFunctions } from '@/sceneGlobals'
 
 const props = defineProps({ paused: Boolean })
-const emit = defineEmits(['goToMenu']) // para emitir al componente padre
+const emit = defineEmits(['goToMenu'])
 
 let player
 const bullets = []
@@ -48,31 +62,21 @@ const groundY = 0.4
 const gotHit = ref(false)
 const health = ref(10)
 let canBeHit = true
-const immunityTime = 2000 // ✅ 2 segundos de inmunidad
+const immunityTime = 2000
 
-function goToMenu() {
-  emit('goToMenu')
-}
+const nombreJugador = localStorage.getItem('nombreUsuario') || 'Jugador'
+const zombiesEliminados = ref(0)
+const tiempo = ref(0)
 
-const keys = {}
-function onKeyDown(e) { keys[e.key.toLowerCase()] = true }
-function onKeyUp(e) { keys[e.key.toLowerCase()] = false }
+const tiempoFormateado = computed(() => {
+  const min = Math.floor(tiempo.value / 60)
+  const seg = tiempo.value % 60
+  return `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`
+})
 
-let isPointerLocked = false
-function enablePointerLock() {
-  document.body.requestPointerLock?.()
-}
-function onPointerLockChange() {
-  isPointerLocked = document.pointerLockElement === document.body
-}
-function onMouseMove(e) {
-  if (!isPointerLocked || props.paused || health.value <= 0) return
-  const sensitivity = 0.002
-  yawObject.rotation.y -= e.movementX * sensitivity
-  pitchObject.rotation.x -= e.movementY * sensitivity
-  const limit = Math.PI / 2 - 0.01
-  pitchObject.rotation.x = Math.max(-limit, Math.min(limit, pitchObject.rotation.x))
-}
+onMounted(() => {
+  setInterval(() => tiempo.value++, 1000)
+})
 
 window.setPlayerHit = () => {
   if (!canBeHit || health.value <= 0) return
@@ -95,7 +99,7 @@ watch(health, val => {
   if (val <= 0) {
     speed = 0
     canBeHit = false
-    window.stopSpawning = true // ✅ detener generación de enemigos
+    window.stopSpawning = true
   }
 })
 
@@ -159,6 +163,28 @@ function updateBullets(delta) {
   }
 }
 
+function enablePointerLock() {
+  document.body.requestPointerLock?.()
+}
+
+function onPointerLockChange() {
+  isPointerLocked = document.pointerLockElement === document.body
+}
+
+function onMouseMove(e) {
+  if (!isPointerLocked || props.paused || health.value <= 0) return
+  const sensitivity = 0.002
+  yawObject.rotation.y -= e.movementX * sensitivity
+  pitchObject.rotation.x -= e.movementY * sensitivity
+  const limit = Math.PI / 2 - 0.01
+  pitchObject.rotation.x = Math.max(-limit, Math.min(limit, pitchObject.rotation.x))
+}
+
+function onKeyDown(e) { keys[e.key.toLowerCase()] = true }
+function onKeyUp(e) { keys[e.key.toLowerCase()] = false }
+
+const keys = {}
+
 onMounted(() => {
   document.addEventListener('keydown', onKeyDown)
   document.addEventListener('keyup', onKeyUp)
@@ -181,70 +207,68 @@ onMounted(() => {
   loadBulletModel(() => console.log('✔ Bala cargada'))
 
   updateFunctions.push(() => {
-  if (props.paused || health.value <= 0) return
+    if (props.paused || health.value <= 0) return
 
-  const delta = clock.getDelta()
-  updateBullets(delta)
+    const delta = clock.getDelta()
+    updateBullets(delta)
 
-  const velocity = new THREE.Vector3()
-  velocity.set(0, 0, 0)
-  if (keys['w']) velocity.z -= 1
-  if (keys['s']) velocity.z += 1
-  if (keys['a']) velocity.x -= 1
-  if (keys['d']) velocity.x += 1
+    const velocity = new THREE.Vector3()
+    velocity.set(0, 0, 0)
+    if (keys['w']) velocity.z -= 1
+    if (keys['s']) velocity.z += 1
+    if (keys['a']) velocity.x -= 1
+    if (keys['d']) velocity.x += 1
 
-  if (velocity.length() > 0) {
-    velocity.normalize().multiplyScalar(speed)
-    const direction = velocity.clone().applyEuler(yawObject.rotation)
+    if (velocity.length() > 0) {
+      velocity.normalize().multiplyScalar(speed)
+      const direction = velocity.clone().applyEuler(yawObject.rotation)
 
-    // NUEVO: Prever la próxima posición
-    const nextPos = player.position.clone().add(direction)
-    const nextBox = new THREE.Box3().setFromCenterAndSize(nextPos, new THREE.Vector3(1, 2, 1))
+      const nextPos = player.position.clone().add(direction)
+      const nextBox = new THREE.Box3().setFromCenterAndSize(nextPos, new THREE.Vector3(1, 2, 1))
 
-    let collision = false
-    if (Array.isArray(window.mapObstacles)) {
-      for (const wallBox of window.mapObstacles) {
-        if (nextBox.intersectsBox(wallBox)) {
-          collision = true
-          break
+      let collision = false
+      if (Array.isArray(window.mapObstacles)) {
+        for (const wallBox of window.mapObstacles) {
+          if (nextBox.intersectsBox(wallBox)) {
+            collision = true
+            break
+          }
         }
+      }
+
+      if (!collision) {
+        player.position.copy(nextPos)
+        yawObject.position.copy(player.position)
       }
     }
 
-    // Solo mover si no hay colisión
-    if (!collision) {
-      player.position.copy(nextPos)
-      yawObject.position.copy(player.position)
+    if (keys[' '] && !isJumping) {
+      verticalSpeed = 0.10
+      isJumping = true
     }
-  }
 
-  if (keys[' '] && !isJumping) {
-    verticalSpeed = 0.10
-    isJumping = true
-  }
-
-  if (isJumping) {
-    verticalSpeed += gravity
-    player.position.y += verticalSpeed
-    yawObject.position.y = player.position.y
-    if (player.position.y <= groundY) {
-      player.position.y = groundY
-      yawObject.position.y = groundY
-      verticalSpeed = 0
-      isJumping = false
+    if (isJumping) {
+      verticalSpeed += gravity
+      player.position.y += verticalSpeed
+      yawObject.position.y = player.position.y
+      if (player.position.y <= groundY) {
+        player.position.y = groundY
+        yawObject.position.y = groundY
+        verticalSpeed = 0
+        isJumping = false
+      }
     }
-  }
 
-if (window.mapLimits) {
-  const { xMin, xMax, zMin, zMax } = window.mapLimits
-  player.position.x = Math.max(xMin, Math.min(xMax, player.position.x))
-  player.position.z = Math.max(zMin, Math.min(zMax, player.position.z))
-}
-  player.position.y = Math.max(groundY, player.position.y)
-  yawObject.position.copy(player.position)
+    if (window.mapLimits) {
+      const { xMin, xMax, zMin, zMax } = window.mapLimits
+      player.position.x = Math.max(xMin, Math.min(xMax, player.position.x))
+      player.position.z = Math.max(zMin, Math.min(zMax, player.position.z))
+    }
+    player.position.y = Math.max(groundY, player.position.y)
+    yawObject.position.copy(player.position)
 
-  player.box.setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
-})
+    player.box.setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
+  })
 
   window.player = player
 })
@@ -258,5 +282,88 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.hud-top {
+  position: fixed;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  padding: 0 20px;
+}
 
+.hud-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.player-name {
+  font-family: 'Creepster', cursive;
+  color: yellow;
+  font-size: 20px;
+  margin-bottom: 4px;
+  text-shadow: 2px 2px 4px black;
+}
+
+.health-bar-container {
+  width: 200px;
+  height: 20px;
+  border: 2px solid #333;
+  background: #555;
+}
+
+.health-bar {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.hud-center .cronometro {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 6px black;
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zombie-logo {
+  width: 40px;
+  height: auto;
+  filter: drop-shadow(0 0 5px red);
+}
+
+.zombie-kills {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 3px red;
+}
+
+.crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: red;
+  user-select: none;
+  pointer-events: none;
+}
+
+.pointer-lock-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+  z-index: 1;
+}
 </style>

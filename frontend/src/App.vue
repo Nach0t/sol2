@@ -29,6 +29,7 @@
       <div class="menu-buttons">
         <button @click="startGame">Iniciar</button>
         <button @click="toggleInstructions">¿Cómo jugar?</button>
+        <button @click="mostrarRanking">🏆 Ver Ranking</button>
         <button @click="logout" class="logout-button">Cerrar sesión</button>
       </div>
       <div v-if="showInstructions" class="instructions">
@@ -36,6 +37,9 @@
         <p>🎯 ¡Evita que los zombies te toquen o perderás vida!</p>
       </div>
     </div>
+
+    <!-- Vista de Ranking -->
+    <Ranking v-else-if="showRanking" @volver="volverMenu" />
 
     <!-- Juego -->
     <GameScene v-else @goToMenu="returnToMenu" />
@@ -46,17 +50,19 @@
 import GameScene from '@/components/GameScene.vue'
 import LoginForm from '@/components/LoginForm.vue'
 import RegisterForm from '@/components/RegisterForm.vue'
+import Ranking from '@/components/Ranking.vue'
 import { renderer, scene, camera, updateFunctions } from './sceneGlobals'
 
 export default {
   name: 'App',
-  components: { GameScene, LoginForm, RegisterForm },
+  components: { GameScene, LoginForm, RegisterForm, Ranking },
   data() {
     return {
       showIntro: true,
       showMenu: false,
       showLogin: true,
       showInstructions: false,
+      showRanking: false,
       isAuthenticated: false,
       nombreUsuario: '',
       animationFrameId: null,
@@ -94,6 +100,14 @@ export default {
     },
     toggleInstructions() {
       this.showInstructions = !this.showInstructions
+    },
+    mostrarRanking() {
+      this.showMenu = false
+      this.showRanking = true
+    },
+    volverMenu() {
+      this.showRanking = false
+      this.showMenu = true
     },
     returnToMenu() {
       this.showMenu = true
