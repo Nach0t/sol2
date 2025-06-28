@@ -24,6 +24,7 @@
     <div v-if="health <= 0" class="death-screen">
       <h1>💀 ¡Perdiste!</h1>
       <h2>Que manco</h2>
+      <button @click="volverAlMenu" class="btn-volver">Volver al menú</button>
     </div>
 
     <div @click="enablePointerLock" class="pointer-lock-area"></div>
@@ -50,6 +51,9 @@ const props = defineProps({ paused: Boolean })
 const emit = defineEmits(['goToMenu'])
 
 let player
+let intervaloTiempo
+let isPointerLocked = false
+const juegoTerminado = ref(false)
 const bullets = []
 const bulletSpeed = 1
 let bulletTemplate = null
@@ -85,23 +89,116 @@ const tiempoFormateado = computed(() => {
   return `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`
 })
 
+function volverAlMenu() {
+  emit('goToMenu')
+}
+
 onMounted(() => {
-  setInterval(() => tiempo.value++, 1000)
+  intervaloTiempo = setInterval(() => {
+    if (!juegoTerminado.value) tiempo.value++
+  }, 1000)
+
+  document.addEventListener('keydown', onKeyDown)
+  document.addEventListener('keyup', onKeyUp)
+  document.addEventListener('pointerlockchange', onPointerLockChange)
+  document.addEventListener('mousemove', onMouseMove)
+
   document.addEventListener('keydown', e => {
     if (e.code === 'Tab') {
       e.preventDefault()
       mostrarResumen.value = !mostrarResumen.value
     }
   })
+
+  window.addEventListener('mousedown', e => {
+    if (e.button === 0 && !props.paused && health.value > 0) shoot()
+  })
+
+  player = new THREE.Object3D()
+  player.position.set(10.25, groundY, 0.5)
+  scene.add(player)
+
+  player.box = new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
+
+  yawObject.position.copy(player.position)
+  camera.position.set(0, -0.05, -0.25)
+
+  loadBulletModel(() => console.log('✔ Bala cargada'))
+
+  updateFunctions.push(() => {
+    if (props.paused || health.value <= 0) return
+
+    const delta = clock.getDelta()
+    updateBullets(delta)
+
+    const velocity = new THREE.Vector3()
+    velocity.set(0, 0, 0)
+    if (keys['w']) velocity.z -= 1
+    if (keys['s']) velocity.z += 1
+    if (keys['a']) velocity.x -= 1
+    if (keys['d']) velocity.x += 1
+
+    if (velocity.length() > 0) {
+      velocity.normalize().multiplyScalar(speed)
+      const direction = velocity.clone().applyEuler(yawObject.rotation)
+      const nextPos = player.position.clone().add(direction)
+      const nextBox = new THREE.Box3().setFromCenterAndSize(nextPos, new THREE.Vector3(1, 2, 1))
+
+      let collision = false
+      if (Array.isArray(window.mapObstacles)) {
+        for (const wallBox of window.mapObstacles) {
+          if (nextBox.intersectsBox(wallBox)) {
+            collision = true
+            break
+          }
+        }
+      }
+
+      if (!collision) {
+        player.position.copy(nextPos)
+        yawObject.position.copy(player.position)
+      }
+    }
+
+    if (keys[' '] && !isJumping) {
+      verticalSpeed = 0.10
+      isJumping = true
+    }
+
+    if (isJumping) {
+      verticalSpeed += gravity
+      player.position.y += verticalSpeed
+      yawObject.position.y = player.position.y
+      if (player.position.y <= groundY) {
+        player.position.y = groundY
+        yawObject.position.y = groundY
+        verticalSpeed = 0
+        isJumping = false
+      }
+    }
+
+    if (window.mapLimits) {
+      const { xMin, xMax, zMin, zMax } = window.mapLimits
+      player.position.x = Math.max(xMin, Math.min(xMax, player.position.x))
+      player.position.z = Math.max(zMin, Math.min(zMax, player.position.z))
+    }
+    player.position.y = Math.max(groundY, player.position.y)
+    yawObject.position.copy(player.position)
+    player.box.setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
+  })
+
+  window.player = player
 })
 
 watch(health, async val => {
   if (val <= 0 && !rankingGuardado) {
+    juegoTerminado.value = true
     speed = 0
     canBeHit = false
     window.stopSpawning = true
-    const puntaje = zombiesEliminados.value * 10 + tiempo.value
+    clearInterval(intervaloTiempo)
 
+    const puntaje = zombiesEliminados.value * 10 + tiempo.value
     try {
       await axios.post('http://localhost:3000/ranking', {
         nombreUsuario: nombreJugador,
@@ -109,7 +206,6 @@ watch(health, async val => {
         tiempo: tiempo.value,
         puntaje
       })
-      console.log('✅ Ranking enviado')
       rankingGuardado = true
     } catch (err) {
       console.error('❌ Error al enviar ranking:', err)
@@ -121,7 +217,6 @@ window.incrementZombieKills = () => {
   zombiesEliminados.value++
   console.log('✅ Zombie eliminado. Total:', zombiesEliminados.value)
 }
-
 
 const healthColor = computed(() => {
   if (health.value > 60) return '#2ecc71'
@@ -223,97 +318,24 @@ function onKeyDown(e) { keys[e.key.toLowerCase()] = true }
 function onKeyUp(e) { keys[e.key.toLowerCase()] = false }
 
 const keys = {}
-
-onMounted(() => {
-  document.addEventListener('keydown', onKeyDown)
-  document.addEventListener('keyup', onKeyUp)
-  document.addEventListener('pointerlockchange', onPointerLockChange)
-  document.addEventListener('mousemove', onMouseMove)
-
-  window.addEventListener('mousedown', e => {
-    if (e.button === 0 && !props.paused && health.value > 0) shoot()
-  })
-
-  player = new THREE.Object3D()
-  player.position.set(10.25, groundY, 0.5)
-  scene.add(player)
-
-  player.box = new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
-
-  yawObject.position.copy(player.position)
-  camera.position.set(0, -0.05, -0.25)
-
-  loadBulletModel(() => console.log('✔ Bala cargada'))
-
-  updateFunctions.push(() => {
-    if (props.paused || health.value <= 0) return
-
-    const delta = clock.getDelta()
-    updateBullets(delta)
-
-    const velocity = new THREE.Vector3()
-    velocity.set(0, 0, 0)
-    if (keys['w']) velocity.z -= 1
-    if (keys['s']) velocity.z += 1
-    if (keys['a']) velocity.x -= 1
-    if (keys['d']) velocity.x += 1
-
-    if (velocity.length() > 0) {
-      velocity.normalize().multiplyScalar(speed)
-      const direction = velocity.clone().applyEuler(yawObject.rotation)
-      const nextPos = player.position.clone().add(direction)
-      const nextBox = new THREE.Box3().setFromCenterAndSize(nextPos, new THREE.Vector3(1, 2, 1))
-
-      let collision = false
-      if (Array.isArray(window.mapObstacles)) {
-        for (const wallBox of window.mapObstacles) {
-          if (nextBox.intersectsBox(wallBox)) {
-            collision = true
-            break
-          }
-        }
-      }
-
-      if (!collision) {
-        player.position.copy(nextPos)
-        yawObject.position.copy(player.position)
-      }
-    }
-
-    if (keys[' '] && !isJumping) {
-      verticalSpeed = 0.10
-      isJumping = true
-    }
-
-    if (isJumping) {
-      verticalSpeed += gravity
-      player.position.y += verticalSpeed
-      yawObject.position.y = player.position.y
-      if (player.position.y <= groundY) {
-        player.position.y = groundY
-        yawObject.position.y = groundY
-        verticalSpeed = 0
-        isJumping = false
-      }
-    }
-
-    if (window.mapLimits) {
-      const { xMin, xMax, zMin, zMax } = window.mapLimits
-      player.position.x = Math.max(xMin, Math.min(xMax, player.position.x))
-      player.position.z = Math.max(zMin, Math.min(zMax, player.position.z))
-    }
-    player.position.y = Math.max(groundY, player.position.y)
-    yawObject.position.copy(player.position)
-    player.box.setFromCenterAndSize(player.position, new THREE.Vector3(1, 2, 1))
-  })
-
-  window.player = player
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('keydown', onKeyDown)
-  document.removeEventListener('keyup', onKeyUp)
-  document.removeEventListener('pointerlockchange', onPointerLockChange)
-  document.removeEventListener('mousemove', onMouseMove)
-})
 </script>
+
+<style scoped>
+.btn-volver {
+  margin-top: 20px;
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  border: 2px solid red;
+  font-family: 'Creepster', cursive;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.btn-volver:hover {
+  background-color: red;
+  color: yellow;
+}
+</style>

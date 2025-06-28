@@ -515,7 +515,7 @@ body {
 
 .hud-top {
   position: fixed;
-  top: 10px;
+  top: 60px; /* antes: 10px */
   left: 0;
   width: 100%;
   display: flex;
@@ -524,6 +524,7 @@ body {
   z-index: 1000;
   padding: 0 20px;
 }
+
 
 .hud-left {
   display: flex;
@@ -561,21 +562,23 @@ body {
 .hud-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  margin-right: 20px;
 }
 
 .zombie-logo {
-  width: 40px;
+  width: 28px;
   height: auto;
-  filter: drop-shadow(0 0 5px red);
+  filter: drop-shadow(0 0 3px red);
 }
 
 .zombie-kills {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 22px;
+  font-family: 'Creepster', cursive;
   color: white;
-  text-shadow: 1px 1px 3px red;
+  text-shadow: 1px 1px 2px red;
 }
+
 
 .crosshair {
   position: fixed;
@@ -641,4 +644,19 @@ body {
 
 .tab-stats-panel td {
   font-size: 18px;
+}
+ .menu-button {
+  margin-top: 20px;
+  background-color: red;
+  color: white;
+  font-family: 'Creepster', cursive;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: 2px solid white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.menu-button:hover {
+  background-color: black;
+  color: yellow;
 }

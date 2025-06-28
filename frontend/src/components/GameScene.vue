@@ -20,8 +20,8 @@
 
     <!-- Escena del juego -->
     <ThreeMap v-show="!paused" />
-    <PlayerCube ref="playerRef" :paused="paused" />
-    <Enemies :paused="paused" v-show="!paused" />
+    <PlayerCube ref="playerRef" :paused="paused" @goToMenu="goToMainMenu" />
+    <Enemies :paused="paused" v-show="!paused" @goToMenu="goToMainMenu" />
   </div>
 </template>
 
@@ -39,7 +39,9 @@ const playerRef = ref(null)
 
 function handleKeydown(e) {
   if (e.key === 'Escape') {
-    const playerDead = playerRef.value?.health <= 0
+    // Asegúrate de que el jugador esté vivo antes de pausar
+    const player = playerRef.value
+    const playerDead = player?.$data?.health <= 0 || player?.health <= 0
     if (!playerDead) {
       paused.value = !paused.value
       cancelConfirmations()
@@ -76,5 +78,5 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Se recomienda agregar estilo de los menús aquí si no está en style.css */
+/* Puedes agregar estilos personalizados aquí si es necesario */
 </style>
