@@ -1,0 +1,51 @@
+name: CI/CD Dead Rising
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  install-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.stats()'" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+
+    env:
+      MONGO_URI: mongodb://localhost:27017/testdb
+      JWT_SECRET: chokominto
+
+    steps:
+      - name: ⬇️ Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: 🔧 Instalar pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: 🟩 Instalar dependencias del backend
+        working-directory: ./backend
+        run: pnpm install
+
+      - name: 🧪 Ejecutar tests del backend
+        working-directory: ./backend
+        run: pnpm test
+
+      - name: 🟢 Instalar dependencias del frontend
+        working-directory: ./frontend
+        run: pnpm install
+
+      - name: 🔨 Compilar frontend
+        working-directory: ./frontend
+        run: pnpm build
