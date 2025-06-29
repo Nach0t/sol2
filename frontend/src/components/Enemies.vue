@@ -8,9 +8,7 @@ import * as THREE from 'three'
 import { scene, updateFunctions } from '@/sceneGlobals'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
-const props = defineProps({
-  paused: Boolean
-})
+const props = defineProps({ paused: Boolean })
 
 let enemies = []
 let mixers = []
@@ -22,6 +20,7 @@ const enemySpeed = 0.015
 const maxEnemies = 5
 
 const attackSound = new Audio('/sounds/zombie-scream.mp3')
+attackSound.loop = true
 
 function disposeZombie(zombie) {
   zombie.traverse(child => {
@@ -186,12 +185,11 @@ function updateEnemyLogic() {
       enemy.lookAt(player.position.x, enemy.position.y, player.position.z)
     }
 
-    if (distance < 1.5 && enemy.userData.punch && !enemy.userData.punch.isRunning()) {
+    if (distance < 0.9 && enemy.userData.punch && !enemy.userData.punch.isRunning()) {
       enemy.userData.punch.reset().play()
-      attackSound.currentTime = 0
-      attackSound.play()
+      if (attackSound.paused) attackSound.play()
       if (typeof window.setPlayerHit === 'function') {
-        window.setPlayerHit()
+        window.setPlayerHit(enemy.position.clone())
       }
     }
   })
@@ -210,6 +208,7 @@ onMounted(() => {
     return
   }
 
+  attackSound.play()
   startSpawningEnemies()
   updateFunctions.push(updateEnemyLogic)
   window.enemies = enemies
@@ -229,9 +228,10 @@ onBeforeUnmount(() => {
   if (idx !== -1) updateFunctions.splice(idx, 1)
 
   delete window.enemies
+  attackSound.pause()
+  attackSound.currentTime = 0
 })
 </script>
 
 <style scoped>
-
 </style>

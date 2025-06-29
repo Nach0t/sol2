@@ -26,6 +26,8 @@
 </template>
 
 <script setup>
+import ModelLoader from './ModelLoader.vue' // Asegúrate de que el path esté correcto
+
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import ThreeMap from './ThreeMap.vue'
 import PlayerCube from './PlayerCube.vue'

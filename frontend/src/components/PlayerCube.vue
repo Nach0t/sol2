@@ -19,7 +19,10 @@
       </div>
     </div>
 
-    <div v-if="gotHit" class="hit-message">¡Te dañaron!</div>
+    <!-- Indicador de dirección del daño -->
+    <div v-if="damageAngle !== null" class="damage-ring">
+      <div class="damage-sector" :style="{ transform: `rotate(${damageAngle}deg)` }"></div>
+    </div>
 
     <div v-if="health <= 0" class="death-screen">
       <h1>💀 ¡Perdiste!</h1>
@@ -139,10 +142,11 @@ onMounted(() => {
     if (keys['d']) velocity.x += 1
 
     if (velocity.length() > 0) {
-      velocity.normalize().multiplyScalar(speed)
-      const direction = velocity.clone().applyEuler(yawObject.rotation)
-      const nextPos = player.position.clone().add(direction)
-      const nextBox = new THREE.Box3().setFromCenterAndSize(nextPos, new THREE.Vector3(1, 2, 1))
+  velocity.normalize().multiplyScalar(speed)
+  // Movimiento en dirección cardinal fija
+  const direction = new THREE.Vector3(velocity.x, 0, velocity.z)
+  const nextPos = player.position.clone().add(direction)
+  const nextBox = new THREE.Box3().setFromCenterAndSize(nextPos, new THREE.Vector3(1, 2, 1))
 
       let collision = false
       if (Array.isArray(window.mapObstacles)) {
