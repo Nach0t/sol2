@@ -709,3 +709,40 @@ body {
   from { opacity: 1; }
   to { opacity: 0; }
 }
+
+
+.damage-ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.07);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  z-index: 1002;
+  pointer-events: none;
+  animation: fadeOutRing 0.8s forwards;
+}
+
+.damage-sector {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  background: conic-gradient(
+    rgba(255, 0, 0, 0.5) 0deg 40deg,
+    transparent 40deg 360deg
+  );
+  border-radius: 50%;
+  transform-origin: center;
+  transform: rotate(0deg);
+  animation: fadeOutRing 0.8s forwards;
+}
+
+@keyframes fadeOutRing {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
